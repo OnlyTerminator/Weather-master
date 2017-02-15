@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CommonTool/CommonTool.iml" filepath="$PROJECT_DIR$/CommonTool/CommonTool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LogModule/LogModule.iml" filepath="$PROJECT_DIR$/LogModule/LogModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OKHttpModule/OKHttpModule.iml" filepath="$PROJECT_DIR$/OKHttpModule/OKHttpModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RxBusModule/RxBusModule.iml" filepath="$PROJECT_DIR$/RxBusModule/RxBusModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShareModule/ShareModule.iml" filepath="$PROJECT_DIR$/ShareModule/ShareModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Weather/Weather.iml" filepath="$PROJECT_DIR$/Weather/Weather.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Weather-master.iml" filepath="$PROJECT_DIR$/Weather-master.iml" />
+    </modules>
+  </component>
+</project>
