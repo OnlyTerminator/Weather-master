@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * 天气首屏Fragment适配器
- * Created by kieth on 3/26.
+ * Created by aotuman on 2/16.
  */
 public class WeatherFragmentAdapter extends PagerAdapter {
     private static final String KEY_WEATHER_PAGE_DATA = "key_weather_page_data";
@@ -55,10 +55,6 @@ public class WeatherFragmentAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        // If we already have this item instantiated, there is nothing
-        // to do.  This can happen when we are restoring the entire pager
-        // from its saved state, where the fragment manager has already
-        // taken care of restoring the fragments we previously had instantiated.
         if (mFragments.size() > position) {
             Fragment f = mFragments.get(position);
             if (f != null) {

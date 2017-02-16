@@ -48,6 +48,7 @@ public class AddCityFragment extends Fragment {
     private TextView mBtnAddCity;
     private List<CityInfo> data = new ArrayList<CityInfo>();
     private CityNameAdapter adapter = null;
+    private CityClickCallBack mCallback;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         if(null == view){
@@ -71,8 +72,9 @@ public class AddCityFragment extends Fragment {
         adapter.setOnItemClickLitener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(AddCityFragment.this.getContext(),""+position,Toast.LENGTH_SHORT).show();
-                
+                if(null != mCallback){
+                    mCallback.onClickListion(position-1);
+                }
             }
 
             @Override
@@ -167,4 +169,11 @@ public class AddCityFragment extends Fragment {
         RxSubscriptions.add(mRxSub);
     }
 
+    public interface CityClickCallBack{
+        void onClickListion(int position);
+    }
+
+    public void setCityOnClickListion(CityClickCallBack callBack){
+        mCallback = callBack;
+    }
 }

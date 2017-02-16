@@ -3,8 +3,10 @@ package com.aotuman.weather;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.event.AddCityEvent;
 import com.aotuman.event.DeleteCityEvent;
+import com.aotuman.fragment.AddCityFragment;
 import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.cityinfo.GetWeatherCityInfo;
 import com.google.gson.Gson;
@@ -37,6 +40,8 @@ public class MainActivity extends FragmentActivity {
 	private WeatherFragmentAdapter mFragmentAdapter;
 	private List<CityInfo> ps = new ArrayList<>();
 	private int currentIndex;
+	private AddCityFragment mCityFragment;
+	private DrawerLayout mDrawerLayout;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,6 +87,13 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 
+		mCityFragment.setCityOnClickListion(new AddCityFragment.CityClickCallBack() {
+			@Override
+			public void onClickListion(int position) {
+				mPageVp.setCurrentItem(position);
+				mDrawerLayout.closeDrawers();
+			}
+		});
 		flb.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -189,8 +201,10 @@ public class MainActivity extends FragmentActivity {
 
 	private void initView() {
 		L.i("aotuman","is a test");
-		mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
+		mPageVp = (ViewPager) findViewById(R.id.id_page_vp);
 		flb = (FloatingActionButton) findViewById(R.id.fab);
+		mCityFragment = (AddCityFragment) getSupportFragmentManager().findFragmentById(R.id.fg_city_list);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.dl);
 	}
 
 	private UMShareListener umShareListener = new UMShareListener() {
