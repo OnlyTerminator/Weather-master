@@ -36,7 +36,7 @@ import rx.functions.Func1;
 public class MainActivity extends FragmentActivity {
 	private ViewPager mPageVp;
 	private FloatingActionButton flb;
-	private FragmentAdapter mFragmentAdapter;
+	private WeatherFragmentAdapter mFragmentAdapter;
 	private List<Fragment> list = new ArrayList<Fragment>();
 
 	@Override
@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity {
 				list.add(new CityWeatherFragment());
 			}
 		}
-		mFragmentAdapter = new FragmentAdapter(
+		mFragmentAdapter = new WeatherFragmentAdapter(
 				this.getSupportFragmentManager(), list);
 		mPageVp.setAdapter(mFragmentAdapter);
 		mPageVp.setCurrentItem(0);
@@ -161,7 +161,7 @@ public class MainActivity extends FragmentActivity {
 										list.add(new CityWeatherFragment());
 									}
 								}
-								mFragmentAdapter = new FragmentAdapter(MainActivity.this.getSupportFragmentManager(), list);
+								mFragmentAdapter = new WeatherFragmentAdapter(MainActivity.this.getSupportFragmentManager(), list);
 								mPageVp.setAdapter(mFragmentAdapter);
 								mPageVp.setOffscreenPageLimit(8);
 								mFragmentAdapter.notifyDataSetChanged();

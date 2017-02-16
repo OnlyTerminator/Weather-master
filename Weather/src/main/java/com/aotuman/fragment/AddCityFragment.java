@@ -18,9 +18,7 @@ import com.aotuman.adapter.clicklistener.OnItemClickListener;
 import com.aotuman.basetools.L;
 import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
-import com.aotuman.database.CityInfoDataManager;
 import com.aotuman.event.AddCityEvent;
-import com.aotuman.event.CityChangeEvent;
 import com.aotuman.event.DeleteCityEvent;
 import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.weatherinfo.GetAQIWeather;
@@ -28,7 +26,6 @@ import com.aotuman.http.weatherinfo.GetForecastWeather;
 import com.aotuman.http.weatherinfo.GetNowWeather;
 import com.aotuman.weather.AddCityActivity;
 import com.aotuman.weather.R;
-import com.aotuman.weather.WeatherContext;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -38,13 +35,8 @@ import java.util.List;
 import me.yokeyword.rxbus.RxBus;
 import me.yokeyword.rxbus.RxBusSubscriber;
 import me.yokeyword.rxbus.RxSubscriptions;
-import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by 凹凸曼 on 2016/11/14.

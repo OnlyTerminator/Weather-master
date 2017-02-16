@@ -21,7 +21,7 @@ public class WeatherInfoDataBaseHelp extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS weatherinfo (id integer primary key autoincrement, citynm varchar(20), cityno varchar(20), nowweather TEXT, aqi TEXT, pm TEXT, nextweather TEXT,oldweather TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS weatherinfo (id integer primary key autoincrement, cityid varchar(20), citynm varchar(20), cityno varchar(20), nowweather TEXT, aqi TEXT, historyweather TEXT,forecastweather TEXT)");
     }
 
     @Override

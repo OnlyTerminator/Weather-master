@@ -20,6 +20,7 @@ import com.aotuman.event.AddCityEvent;
 import com.aotuman.event.CityChangeEvent;
 import com.aotuman.fragment.AddCityFragment;
 import com.aotuman.http.cityinfo.CityInfo;
+import com.aotuman.http.weatherinfo.GetNowWeather;
 import com.aotuman.view.sortlistview.CharacterParser;
 import com.aotuman.view.sortlistview.ClearEditText;
 import com.aotuman.view.sortlistview.PinyinComparator;
@@ -111,6 +112,7 @@ public class AddCityActivity extends Activity {
 					ps.clear();
 				}
 				ps.add(cityInfo);
+				new GetNowWeather().getNowWeather(cityInfo.citynm);
 				Toast.makeText(getApplication(), cityInfo.citynm+"添加成功", Toast.LENGTH_SHORT).show();
 				SPUtils.put(AddCityActivity.this, SharePreEvent.CITY_LIST,gson.toJson(ps));
 				SPUtils.put(AddCityActivity.this, SharePreEvent.CURRENT_CITY_ID,cityInfo.cityid);

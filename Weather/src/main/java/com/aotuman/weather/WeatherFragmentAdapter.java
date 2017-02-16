@@ -10,10 +10,10 @@ import com.aotuman.fragment.CityWeatherFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentAdapter extends FragmentPagerAdapter {
+public class WeatherFragmentAdapter extends FragmentPagerAdapter {
 	private FragmentManager mFragmentManager;
 	List<Fragment> fragmentList = new ArrayList<Fragment>();
-	public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+	public WeatherFragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
 		super(fm);
 		this.mFragmentManager = fm;
 		this.fragmentList = fragmentList;
