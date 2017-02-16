@@ -21,15 +21,15 @@ public class SPUtils {
      * 保存数据的方法，我们需要拿到保存数据的具体类型，然后根据类型调用不同的保存方法
      *
      * @param context
-     * @param key
+     * @param event
      * @param object
      */
-    public static void put(Context context, String key, Object object) {
+    public static void put(Context context, SharePreEvent event, Object object) {
 
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-
+        String key = event.name();
         if (object instanceof String) {
             editor.putString(key, (String) object);
         } else if (object instanceof Integer) {
@@ -51,14 +51,14 @@ public class SPUtils {
      * 得到保存数据的方法，我们根据默认值得到保存的数据的具体类型，然后调用相对于的方法获取值
      *
      * @param context
-     * @param key
+     * @param event
      * @param defaultObject
      * @return
      */
-    public static Object get(Context context, String key, Object defaultObject) {
+    public static Object get(Context context, SharePreEvent event, Object defaultObject) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
                 Context.MODE_PRIVATE);
-
+        String key = event.name();
         if (defaultObject instanceof String) {
             return sp.getString(key, (String) defaultObject);
         } else if (defaultObject instanceof Integer) {

@@ -1,7 +1,7 @@
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rl"
+    android:id="@+id/dl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/back">
@@ -23,7 +23,7 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <fragment class="com.aotuman.fragment.AddCityFragment"
-        android:id="@+id/titles"
+        android:id="@+id/fg_city_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"

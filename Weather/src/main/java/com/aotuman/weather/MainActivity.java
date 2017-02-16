@@ -6,13 +6,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.Toast;
 
 import com.aotuman.basetools.L;
-import com.aotuman.event.CityChangeEvent;
-import com.aotuman.fragment.CityWeatherFragment;
+import com.aotuman.commontool.SPUtils;
+import com.aotuman.commontool.SharePreEvent;
+import com.aotuman.event.AddCityEvent;
+import com.aotuman.event.DeleteCityEvent;
+import com.aotuman.fragment.AddCityFragment;
+import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.cityinfo.GetWeatherCityInfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
@@ -30,9 +37,11 @@ import rx.functions.Func1;
 public class MainActivity extends FragmentActivity {
 	private ViewPager mPageVp;
 	private FloatingActionButton flb;
-	private FragmentAdapter mFragmentAdapter;
-	private List<Fragment> list = new ArrayList<Fragment>();
-
+	private WeatherFragmentAdapter mFragmentAdapter;
+	private List<CityInfo> ps = new ArrayList<>();
+	private int currentIndex;
+	private AddCityFragment mCityFragment;
+	private DrawerLayout mDrawerLayout;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,10 +55,13 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void initEvent() {
-		mFragmentAdapter = new FragmentAdapter(
-				this.getSupportFragmentManager(), list);
+		Gson gson = new Gson();
+		String s = (String) SPUtils.get(this,SharePreEvent.CITY_LIST,"");
+		ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+		currentIndex = (int) SPUtils.get(this,SharePreEvent.CURRENT_INDX,0);
+		mFragmentAdapter = new WeatherFragmentAdapter(this.getSupportFragmentManager(), ps);
 		mPageVp.setAdapter(mFragmentAdapter);
-		mPageVp.setCurrentItem(0);
+		mPageVp.setCurrentItem(currentIndex);
 		mPageVp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			/**
@@ -71,10 +83,17 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			public void onPageSelected(int position) {
-				WeatherContext.currentIndex = position;
+				setCurrentIndex(position);
 			}
 		});
 
+		mCityFragment.setCityOnClickListion(new AddCityFragment.CityClickCallBack() {
+			@Override
+			public void onClickListion(int position) {
+				mPageVp.setCurrentItem(position);
+				mDrawerLayout.closeDrawers();
+			}
+		});
 		flb.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -84,29 +103,35 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 
-		subscribeEvent();
+		addSubscribeEvent();
+		deleteSubscribeEvent();
 	}
-	private Subscription mRxSub;
-	private void subscribeEvent() {
-		RxSubscriptions.remove(mRxSub);
-		mRxSub = RxBus.getDefault().toObservable(CityChangeEvent.class)
-				.map(new Func1<CityChangeEvent, CityChangeEvent>() {
+	private Subscription mAddRxSub;
+	private void addSubscribeEvent() {
+		RxSubscriptions.remove(mAddRxSub);
+		mAddRxSub = RxBus.getDefault().toObservable(AddCityEvent.class)
+				.map(new Func1<AddCityEvent, AddCityEvent>() {
 					@Override
-					public CityChangeEvent call(CityChangeEvent event) {
+					public AddCityEvent call(AddCityEvent event) {
 						// 变换等操作
 						return event;
 					}
 				})
-				.subscribe(new RxBusSubscriber<CityChangeEvent>() {
+				.subscribe(new RxBusSubscriber<AddCityEvent>() {
 					@Override
-					protected void onEvent(CityChangeEvent myEvent) {
-						L.e("MainActivity.class", "on success");
-//						if(list.size() < WeatherContext.cityList.size()){
-//							for (int i = list.size() ; i < WeatherContext.cityList.size(); i++){
-								list.add(new CityWeatherFragment());
-//							}
-//						}
+					protected void onEvent(AddCityEvent myEvent) {
+						L.i("MainActivity","addFragment==============");
+						mFragmentAdapter.destroyAllFragment();
+//								list.clear();
+						Gson gson = new Gson();
+						String s = (String) SPUtils.get(MainActivity.this,SharePreEvent.CITY_LIST,"");
+						ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+						mFragmentAdapter = new WeatherFragmentAdapter(MainActivity.this.getSupportFragmentManager(), ps);
+						mPageVp.setAdapter(mFragmentAdapter);
+						mPageVp.setOffscreenPageLimit(8);
 						mFragmentAdapter.notifyDataSetChanged();
+//						mPageVp.setCurrentItem(index);
+//						setCurrentIndex(index);
 					}
 
 					@Override
@@ -117,10 +142,57 @@ public class MainActivity extends FragmentActivity {
 						 * 这里注意: 一旦订阅过程中发生异常,走到onError,则代表此次订阅事件完成,后续将收不到onNext()事件,
 						 * 即 接受不到后续的任何事件,实际环境中,我们需要在onError里 重新订阅事件!
 						 */
-						subscribeEvent();
+						addSubscribeEvent();
 					}
 				});
-		RxSubscriptions.add(mRxSub);
+		RxSubscriptions.add(mAddRxSub);
+	}
+
+	private Subscription mDeleteRxSub;
+	private void deleteSubscribeEvent() {
+		RxSubscriptions.remove(mDeleteRxSub);
+		mDeleteRxSub = RxBus.getDefault().toObservable(DeleteCityEvent.class)
+				.map(new Func1<DeleteCityEvent, DeleteCityEvent>() {
+					@Override
+					public DeleteCityEvent call(DeleteCityEvent event) {
+						// 变换等操作
+						return event;
+					}
+				})
+				.subscribe(new RxBusSubscriber<DeleteCityEvent>() {
+					@Override
+					protected void onEvent(DeleteCityEvent myEvent) {
+						L.i("MainActivity","deleteFragment==============");
+						if(null != myEvent) {
+//							if(myEvent.fragmentIndex < list.size()){
+								mFragmentAdapter.destroyAllFragment();
+//								list.clear();
+								Gson gson = new Gson();
+								String s = (String) SPUtils.get(MainActivity.this,SharePreEvent.CITY_LIST,"");
+								ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+								mFragmentAdapter = new WeatherFragmentAdapter(MainActivity.this.getSupportFragmentManager(), ps);
+								mPageVp.setAdapter(mFragmentAdapter);
+								mPageVp.setOffscreenPageLimit(8);
+								mFragmentAdapter.notifyDataSetChanged();
+//								int index = currentIndex < list.size() ? currentIndex : 0;
+//								mPageVp.setCurrentItem(index);
+//								setCurrentIndex(index);
+//							}
+						}
+					}
+
+					@Override
+					public void onError(Throwable e) {
+						super.onError(e);
+						L.e("MainActivity.class", "onError");
+						/**
+						 * 这里注意: 一旦订阅过程中发生异常,走到onError,则代表此次订阅事件完成,后续将收不到onNext()事件,
+						 * 即 接受不到后续的任何事件,实际环境中,我们需要在onError里 重新订阅事件!
+						 */
+						deleteSubscribeEvent();
+					}
+				});
+		RxSubscriptions.add(mDeleteRxSub);
 	}
 
 	private void initData() {
@@ -129,8 +201,10 @@ public class MainActivity extends FragmentActivity {
 
 	private void initView() {
 		L.i("aotuman","is a test");
-		mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
+		mPageVp = (ViewPager) findViewById(R.id.id_page_vp);
 		flb = (FloatingActionButton) findViewById(R.id.fab);
+		mCityFragment = (AddCityFragment) getSupportFragmentManager().findFragmentById(R.id.fg_city_list);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.dl);
 	}
 
 	private UMShareListener umShareListener = new UMShareListener() {
@@ -160,5 +234,10 @@ public class MainActivity extends FragmentActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+	}
+
+	private void setCurrentIndex(int index){
+		currentIndex = index;
+		SPUtils.put(MainActivity.this,SharePreEvent.CURRENT_INDX,currentIndex);
 	}
 }

@@ -11,8 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aotuman.adapter.clicklistener.OnItemClickListener;
+import com.aotuman.database.WeatherInfoDataManager;
 import com.aotuman.http.cityinfo.CityInfo;
+import com.aotuman.http.weatherinfo.NowWeather;
+import com.aotuman.http.weatherinfo.Weather;
 import com.aotuman.weather.R;
+import com.aotuman.weather.TTApplication;
 
 import java.util.List;
 
@@ -60,7 +64,9 @@ public class CityNameAdapter extends RecyclerView.Adapter<CityNameAdapter.MyView
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         if(getItemViewType(position) == TYPE_HEADER) return;
-        holder.tv_city_name.setText(data.get(position).citynm);
+        Weather weather = WeatherInfoDataManager.getInstance(TTApplication.getInstance()).findWeatherByCityID(data.get(position).cityid);
+        if (null == weather) return;
+        holder.tv_city_name.setText(weather.citynm);
         if(null != mOnItemClickLitener){
             holder.ll_ba.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,6 +83,10 @@ public class CityNameAdapter extends RecyclerView.Adapter<CityNameAdapter.MyView
                 }
             });
         }
+        NowWeather nowWeather = weather.nowWeather;
+        if(null == nowWeather) return;
+        holder.tv_city_des.setText(weather.nowWeather.weather);
+        holder.tv_city_temp.setText(weather.nowWeather.temperature_curr);
     }
 
     public void setOnItemClickLitener(OnItemClickListener mOnItemClickLitener){
@@ -88,12 +98,14 @@ public class CityNameAdapter extends RecyclerView.Adapter<CityNameAdapter.MyView
         private LinearLayout ll_ba;
         private ImageView iv;
         private TextView tv_city_des;
+        private TextView tv_city_temp;
         public MyViewHolder(View itemView) {
             super(itemView);
             tv_city_name = (TextView) itemView.findViewById(R.id.tv_city_name);
             ll_ba = (LinearLayout) itemView.findViewById(R.id.ll_ba);
             iv = (ImageView) itemView.findViewById(R.id.iv_city_icon);
             tv_city_des = (TextView) itemView.findViewById(R.id.tv_city_des);
+            tv_city_temp = (TextView) itemView.findViewById(R.id.tv_city_temp);
         }
     }
 }

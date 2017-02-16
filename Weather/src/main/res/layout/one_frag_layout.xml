@@ -24,7 +24,7 @@
         android:textColor="@color/text_white"
         android:layout_below="@id/tv_city_name"
         android:textSize="16dp"
-        android:id="@+id/tv_weather"
+        android:id="@+id/tv_city_weather"
         android:layout_marginTop="6dp"
         android:layout_centerHorizontal="true"/>
     <TextView
@@ -34,9 +34,9 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/text_white"
         android:textSize="60dp"
-        android:layout_below="@id/tv_weather"
+        android:layout_below="@id/tv_city_weather"
         android:layout_marginTop="16dp"
-        android:id="@+id/tv_temp"
+        android:id="@+id/tv_city_temp"
         android:includeFontPadding="false"
         android:fontFamily="sans-serif-thin"
         />

@@ -43,6 +43,7 @@ public class CityInfoDataManager {
             CityInfo cityInfo = list.get(i);
             db.execSQL(sql, new Object[] { cityInfo.weaid, cityInfo.citynm,cityInfo.cityno,cityInfo.cityid,cityInfo.area_1,cityInfo.area_2,cityInfo.area_3 });
         }
+        db.close();
     }
 
     public void insertCityInfo(HashMap<String,CityInfo> hashMap){
@@ -55,6 +56,7 @@ public class CityInfoDataManager {
                 CityInfo cityInfo = (CityInfo) entry.getValue();
                 db.execSQL(sql, new Object[]{cityInfo.weaid, cityInfo.citynm, cityInfo.cityno, cityInfo.cityid, cityInfo.area_1, cityInfo.area_2, cityInfo.area_3});
             }
+            db.close();
         }
     }
 
@@ -79,6 +81,7 @@ public class CityInfoDataManager {
             }
             cursor.close();
         }
+        db.close();
         return cityInfoList;
     }
 
@@ -103,16 +106,20 @@ public class CityInfoDataManager {
             }
             cursor.close();
         }
+        db.close();
         return cityInfoList;
     }
 
     private int cityInfoCount(){
-        Cursor cursor = cityInfoDataBaseHelp.getWritableDatabase().rawQuery("select count(*) from cityinfo", null);
+        SQLiteDatabase db = cityInfoDataBaseHelp.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select count(*) from cityinfo", null);
         while(cursor.moveToNext()){
             //遍历出表名
             int count = cursor.getInt(0);
                 return count;
         }
+        cursor.close();
+        db.close();
         return 0;
     }
 }

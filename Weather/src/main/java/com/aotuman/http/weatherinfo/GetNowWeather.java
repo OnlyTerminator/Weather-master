@@ -3,8 +3,11 @@ package com.aotuman.http.weatherinfo;
 import android.text.TextUtils;
 
 import com.aotuman.basetools.L;
+import com.aotuman.database.WeatherInfoDataBaseHelp;
+import com.aotuman.database.WeatherInfoDataManager;
 import com.aotuman.http.okhttp.OkHttpUtils;
 import com.aotuman.http.okhttp.callback.StringCallback;
+import com.aotuman.weather.TTApplication;
 import com.aotuman.weather.WeatherContext;
 import com.google.gson.Gson;
 
@@ -45,6 +48,9 @@ public class GetNowWeather {
                                     String result = jsonObject.optString("result");
                                     if(!TextUtils.isEmpty(result)){
                                         NowWeather nowWeather = new Gson().fromJson(result,NowWeather.class);
+                                        Weather weather = new Weather(nowWeather.cityid,nowWeather.citynm,nowWeather.cityno);
+                                        weather.setWeatherInfo(nowWeather,null,null,null);
+                                        WeatherInfoDataManager.getInstance(TTApplication.getInstance()).insertWeatherInfo(weather);
                                     }
                                 }
                             } catch (JSONException e) {

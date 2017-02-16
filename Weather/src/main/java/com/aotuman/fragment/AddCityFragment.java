@@ -17,16 +17,15 @@ import com.aotuman.adapter.CityNameAdapter;
 import com.aotuman.adapter.clicklistener.OnItemClickListener;
 import com.aotuman.basetools.L;
 import com.aotuman.commontool.SPUtils;
-import com.aotuman.database.CityInfoDataManager;
+import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.event.AddCityEvent;
-import com.aotuman.event.CityChangeEvent;
+import com.aotuman.event.DeleteCityEvent;
 import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.weatherinfo.GetAQIWeather;
 import com.aotuman.http.weatherinfo.GetForecastWeather;
 import com.aotuman.http.weatherinfo.GetNowWeather;
 import com.aotuman.weather.AddCityActivity;
 import com.aotuman.weather.R;
-import com.aotuman.weather.WeatherContext;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -36,13 +35,8 @@ import java.util.List;
 import me.yokeyword.rxbus.RxBus;
 import me.yokeyword.rxbus.RxBusSubscriber;
 import me.yokeyword.rxbus.RxSubscriptions;
-import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by 凹凸曼 on 2016/11/14.
@@ -54,6 +48,7 @@ public class AddCityFragment extends Fragment {
     private TextView mBtnAddCity;
     private List<CityInfo> data = new ArrayList<CityInfo>();
     private CityNameAdapter adapter = null;
+    private CityClickCallBack mCallback;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         if(null == view){
@@ -77,8 +72,9 @@ public class AddCityFragment extends Fragment {
         adapter.setOnItemClickLitener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(AddCityFragment.this.getContext(),""+position,Toast.LENGTH_SHORT).show();
-                
+                if(null != mCallback){
+                    mCallback.onClickListion(position-1);
+                }
             }
 
             @Override
@@ -90,8 +86,8 @@ public class AddCityFragment extends Fragment {
                         List<CityInfo> list =  new ArrayList<CityInfo>();
                         list.addAll(data);
                         list.remove(0);
-                        SPUtils.put(AddCityFragment.this.getContext(),"city_list",new Gson().toJson(list));
-                        RxBus.getDefault().post(new CityChangeEvent());
+                        SPUtils.put(AddCityFragment.this.getContext(),SharePreEvent.CITY_LIST,new Gson().toJson(list));
+                        RxBus.getDefault().post(new DeleteCityEvent(position-1));
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -103,7 +99,7 @@ public class AddCityFragment extends Fragment {
         mBtnAddCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(data.size() < 9){
+                if(data.size() < 10){
                     startActivity(new Intent(AddCityFragment.this.getActivity(), AddCityActivity.class));
                 }else {
                     Toast.makeText(AddCityFragment.this.getActivity(),"主人，最多只能添加9个，不要太贪心喔！",Toast.LENGTH_SHORT).show();
@@ -126,15 +122,9 @@ public class AddCityFragment extends Fragment {
     }
 
     private void initData() {
-//        data.clear();
         adapter = new CityNameAdapter(data,this.getActivity());
-        CityInfo cityInfo = new CityInfo();
-        cityInfo.citynm = "北京";
-        new GetNowWeather().getNowWeather("上海");
-        new GetAQIWeather().getAQIWeather("上海");
-        new GetForecastWeather().getAQIWeather("上海");
         Gson gson = new Gson();
-        String s = (String) SPUtils.get(AddCityFragment.this.getContext(),"city_list","");
+        String s = (String) SPUtils.get(AddCityFragment.this.getContext(),SharePreEvent.CITY_LIST,"");
         List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
         if(null != ps) {
             data.addAll(ps);
@@ -163,10 +153,6 @@ public class AddCityFragment extends Fragment {
                     protected void onEvent(AddCityEvent myEvent) {
                         data.add(myEvent.cityInfo);
                         adapter.notifyDataSetChanged();
-                        List<CityInfo> list =  new ArrayList<CityInfo>();
-                        list.addAll(data);
-                        list.remove(0);
-                        SPUtils.put(AddCityFragment.this.getContext(),"city_list",new Gson().toJson(list));
                     }
 
                     @Override
@@ -183,4 +169,11 @@ public class AddCityFragment extends Fragment {
         RxSubscriptions.add(mRxSub);
     }
 
+    public interface CityClickCallBack{
+        void onClickListion(int position);
+    }
+
+    public void setCityOnClickListion(CityClickCallBack callBack){
+        mCallback = callBack;
+    }
 }

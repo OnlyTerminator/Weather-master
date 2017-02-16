@@ -8,15 +8,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aotuman.commontool.SPUtils;
+import com.aotuman.commontool.SharePreEvent;
+import com.aotuman.database.WeatherInfoDataManager;
 import com.aotuman.http.cityinfo.CityInfo;
+import com.aotuman.http.weatherinfo.NowWeather;
+import com.aotuman.http.weatherinfo.Weather;
 import com.aotuman.weather.R;
 import com.aotuman.weather.WeatherContext;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 
 public class CityWeatherFragment extends Fragment {
     private View mView;
     private TextView tv_city_name;
-    private CityInfo cityInfo;
+    private TextView tv_city_weather;
+    private TextView tv_city_temp;
+    private Weather mWeather;
 
     @Override
     public void onAttach(Activity activity) {
@@ -37,16 +48,23 @@ public class CityWeatherFragment extends Fragment {
 
     private void initView(View view) {
         tv_city_name = (TextView) view.findViewById(R.id.tv_city_name);
-        if(null != cityInfo) {
-            tv_city_name.setText(cityInfo.citynm);
+        tv_city_weather = (TextView) view.findViewById(R.id.tv_city_weather);
+        tv_city_temp = (TextView) view.findViewById(R.id.tv_city_temp);
+        if(null != mWeather) {
+            tv_city_name.setText(mWeather.citynm);
+            NowWeather nowWeather = mWeather.nowWeather;
+            if(null != nowWeather) {
+                tv_city_weather.setText(nowWeather.weather);
+                tv_city_temp.setText(nowWeather.temperature_curr);
+            }
         }
     }
 
     private void initData() {
-        int size = WeatherContext.cityList.size();
-        if(WeatherContext.currentIndex < size) {
-            cityInfo = WeatherContext.cityList.get(WeatherContext.currentIndex);
-        }
+        Bundle bundle = getArguments();
+        CityInfo cityInfo = (CityInfo) bundle.get("key_weather_page_data");
+        String  cityId = cityInfo.cityid;
+        mWeather = WeatherInfoDataManager.getInstance(this.getContext()).findWeatherByCityID(cityId);
     }
 
 }

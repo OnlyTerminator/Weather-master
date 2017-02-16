@@ -19,7 +19,7 @@ import okhttp3.Call;
 
 public class GetForecastWeather {
 
-    public void getAQIWeather(String cityname){
+    public void getForecastWeather(String cityname){
         OkHttpUtils.post()
                 .url(WeatherContext.forecastweather)
                 .addParams("app","weather.future")
