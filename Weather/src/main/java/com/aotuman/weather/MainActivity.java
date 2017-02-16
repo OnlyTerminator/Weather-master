@@ -10,9 +10,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.aotuman.basetools.L;
-import com.aotuman.event.CityChangeEvent;
+import com.aotuman.commontool.SPUtils;
+import com.aotuman.commontool.SharePreEvent;
+import com.aotuman.event.AddCityEvent;
+import com.aotuman.event.DeleteCityEvent;
 import com.aotuman.fragment.CityWeatherFragment;
+import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.cityinfo.GetWeatherCityInfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
@@ -46,6 +52,14 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void initEvent() {
+		Gson gson = new Gson();
+		String s = (String) SPUtils.get(this,SharePreEvent.CITY_LIST,"");
+		List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+		if(null != ps && !ps.isEmpty()){
+			for (int i = 0; i < ps.size(); i++){
+				list.add(new CityWeatherFragment());
+			}
+		}
 		mFragmentAdapter = new FragmentAdapter(
 				this.getSupportFragmentManager(), list);
 		mPageVp.setAdapter(mFragmentAdapter);
@@ -84,28 +98,25 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 
-		subscribeEvent();
+		addSubscribeEvent();
+		deleteSubscribeEvent();
 	}
-	private Subscription mRxSub;
-	private void subscribeEvent() {
-		RxSubscriptions.remove(mRxSub);
-		mRxSub = RxBus.getDefault().toObservable(CityChangeEvent.class)
-				.map(new Func1<CityChangeEvent, CityChangeEvent>() {
+	private Subscription mAddRxSub;
+	private void addSubscribeEvent() {
+		RxSubscriptions.remove(mAddRxSub);
+		mAddRxSub = RxBus.getDefault().toObservable(AddCityEvent.class)
+				.map(new Func1<AddCityEvent, AddCityEvent>() {
 					@Override
-					public CityChangeEvent call(CityChangeEvent event) {
+					public AddCityEvent call(AddCityEvent event) {
 						// 变换等操作
 						return event;
 					}
 				})
-				.subscribe(new RxBusSubscriber<CityChangeEvent>() {
+				.subscribe(new RxBusSubscriber<AddCityEvent>() {
 					@Override
-					protected void onEvent(CityChangeEvent myEvent) {
-						L.e("MainActivity.class", "on success");
-//						if(list.size() < WeatherContext.cityList.size()){
-//							for (int i = list.size() ; i < WeatherContext.cityList.size(); i++){
-								list.add(new CityWeatherFragment());
-//							}
-//						}
+					protected void onEvent(AddCityEvent myEvent) {
+						L.i("MainActivity","addFragment==============");
+						list.add(new CityWeatherFragment());
 						mFragmentAdapter.notifyDataSetChanged();
 					}
 
@@ -117,10 +128,59 @@ public class MainActivity extends FragmentActivity {
 						 * 这里注意: 一旦订阅过程中发生异常,走到onError,则代表此次订阅事件完成,后续将收不到onNext()事件,
 						 * 即 接受不到后续的任何事件,实际环境中,我们需要在onError里 重新订阅事件!
 						 */
-						subscribeEvent();
+						addSubscribeEvent();
 					}
 				});
-		RxSubscriptions.add(mRxSub);
+		RxSubscriptions.add(mAddRxSub);
+	}
+
+	private Subscription mDeleteRxSub;
+	private void deleteSubscribeEvent() {
+		RxSubscriptions.remove(mDeleteRxSub);
+		mDeleteRxSub = RxBus.getDefault().toObservable(DeleteCityEvent.class)
+				.map(new Func1<DeleteCityEvent, DeleteCityEvent>() {
+					@Override
+					public DeleteCityEvent call(DeleteCityEvent event) {
+						// 变换等操作
+						return event;
+					}
+				})
+				.subscribe(new RxBusSubscriber<DeleteCityEvent>() {
+					@Override
+					protected void onEvent(DeleteCityEvent myEvent) {
+						L.i("MainActivity","deleteFragment==============");
+						if(null != myEvent) {
+							if(myEvent.fragmentIndex < list.size()){
+								mFragmentAdapter.destroyAllFragment();
+								list.clear();
+								Gson gson = new Gson();
+								String s = (String) SPUtils.get(MainActivity.this,SharePreEvent.CITY_LIST,"");
+								List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+								if(null != ps && !ps.isEmpty()){
+									for (int i = 0; i < ps.size(); i++){
+										list.add(new CityWeatherFragment());
+									}
+								}
+								mFragmentAdapter = new FragmentAdapter(MainActivity.this.getSupportFragmentManager(), list);
+								mPageVp.setAdapter(mFragmentAdapter);
+								mPageVp.setOffscreenPageLimit(8);
+								mFragmentAdapter.notifyDataSetChanged();
+							}
+						}
+					}
+
+					@Override
+					public void onError(Throwable e) {
+						super.onError(e);
+						L.e("MainActivity.class", "onError");
+						/**
+						 * 这里注意: 一旦订阅过程中发生异常,走到onError,则代表此次订阅事件完成,后续将收不到onNext()事件,
+						 * 即 接受不到后续的任何事件,实际环境中,我们需要在onError里 重新订阅事件!
+						 */
+						deleteSubscribeEvent();
+					}
+				});
+		RxSubscriptions.add(mDeleteRxSub);
 	}
 
 	private void initData() {

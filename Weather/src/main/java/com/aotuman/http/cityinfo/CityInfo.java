@@ -33,23 +33,38 @@ public class CityInfo extends BaseInfo {
         // 正则表达式，判断首字母是否是英文字母
         String pinyin = TextUtils.isEmpty(cityno) ? simcode : cityno;
         if (!TextUtils.isEmpty(pinyin)) {
-            String shortP = pinyin.substring(0,1).toUpperCase();
-            if(shortP.matches("[A-Z]")) {
+            String shortP = pinyin.substring(0, 1).toUpperCase();
+            if (shortP.matches("[A-Z]")) {
                 return shortP;
             }
         }
         return "#";
     }
 
-    public String getRealCityName(){
-        if(!TextUtils.isEmpty(area_3) && !area_3.equals("城区")){
+    public String getRealCityName() {
+        if (!TextUtils.isEmpty(area_3) && !area_3.equals("城区")) {
             return area_3;
-        }else if(!TextUtils.isEmpty(area_2) && !area_2.equals("城区")){
+        } else if (!TextUtils.isEmpty(area_2) && !area_2.equals("城区")) {
             return area_2;
-        }else if(!TextUtils.isEmpty(area_1) && !area_1.equals("城区")){
+        } else if (!TextUtils.isEmpty(area_1) && !area_1.equals("城区")) {
             return area_1;
-        }else {
+        } else {
             return citynm;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            if (null != obj) {
+                CityInfo cityInfo = (CityInfo) obj;
+                if (weaid.equals(cityInfo.weaid) && cityid.equals(cityInfo.cityid)
+                        && citynm.equals(cityInfo.citynm) && cityno.equals(cityInfo.cityno)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+        }
+        return false;
     }
 }

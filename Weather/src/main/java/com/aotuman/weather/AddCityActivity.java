@@ -6,21 +6,27 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aotuman.commontool.SPUtils;
+import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.database.CityInfoDataManager;
 import com.aotuman.event.AddCityEvent;
 import com.aotuman.event.CityChangeEvent;
+import com.aotuman.fragment.AddCityFragment;
 import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.view.sortlistview.CharacterParser;
 import com.aotuman.view.sortlistview.ClearEditText;
 import com.aotuman.view.sortlistview.PinyinComparator;
 import com.aotuman.view.sortlistview.SideBar;
 import com.aotuman.view.sortlistview.SortAdapter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +60,8 @@ public class AddCityActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//设置在activity启动的时候输入法默认是不开启的
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		setContentView(R.layout.activity_add_city);
 		initViews();
 	}
@@ -90,7 +98,22 @@ public class AddCityActivity extends Activity {
 									int position, long id) {
 				//这里要利用adapter.getItem(position)来获取当前position所对应的对象
 				CityInfo cityInfo = (CityInfo)adapter.getItem(position);
+				Gson gson = new Gson();
+				String s = (String) SPUtils.get(AddCityActivity.this,SharePreEvent.CITY_LIST,"");
+				List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+				if(null != ps ){
+					if(ps.contains(cityInfo)){
+						Toast.makeText(getApplication(), "该城市您已经添加了，去看看外面的世界吧", Toast.LENGTH_SHORT).show();
+						return;
+					}
+				}else {
+					ps = new ArrayList<CityInfo>();
+					ps.clear();
+				}
+				ps.add(cityInfo);
 				Toast.makeText(getApplication(), cityInfo.citynm+"添加成功", Toast.LENGTH_SHORT).show();
+				SPUtils.put(AddCityActivity.this, SharePreEvent.CITY_LIST,gson.toJson(ps));
+				SPUtils.put(AddCityActivity.this, SharePreEvent.CURRENT_CITY_ID,cityInfo.cityid);
 				RxBus.getDefault().post(new AddCityEvent(cityInfo));
 				finish();
 			}
