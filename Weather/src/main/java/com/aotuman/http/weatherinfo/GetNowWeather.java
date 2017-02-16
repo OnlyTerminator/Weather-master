@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.aotuman.basetools.L;
 import com.aotuman.database.WeatherInfoDataBaseHelp;
 import com.aotuman.database.WeatherInfoDataManager;
+import com.aotuman.http.callback.HttpCallBack;
 import com.aotuman.http.okhttp.OkHttpUtils;
 import com.aotuman.http.okhttp.callback.StringCallback;
 import com.aotuman.http.weatherinfo.data.NowWeather;
@@ -24,7 +25,7 @@ import okhttp3.Call;
 
 public class GetNowWeather {
 
-    public void getNowWeather(String cityname){
+    public void getNowWeather(String cityname, final HttpCallBack<NowWeather> callBack){
         OkHttpUtils.post()
                 .url(WeatherContext.nowweather)
                 .addParams("app","weather.today")
@@ -36,12 +37,14 @@ public class GetNowWeather {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        callBack.callBackRequest();
+                        callBack.callBackError(e);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         L.i("GetNowWeathwe",response);
+                        callBack.callBackRequest();
                         if(!TextUtils.isEmpty(response)){
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
@@ -50,6 +53,7 @@ public class GetNowWeather {
                                     String result = jsonObject.optString("result");
                                     if(!TextUtils.isEmpty(result)){
                                         NowWeather nowWeather = new Gson().fromJson(result,NowWeather.class);
+                                        callBack.callBackEntity(nowWeather);
                                         Weather weather = new Weather(nowWeather.cityid,nowWeather.citynm,nowWeather.cityno);
                                         weather.setWeatherInfo(nowWeather,null,null,null);
                                         WeatherInfoDataManager.getInstance(TTApplication.getInstance()).insertWeatherInfo(weather);

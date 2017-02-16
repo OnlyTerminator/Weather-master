@@ -17,8 +17,12 @@ import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.database.CityInfoDataManager;
 import com.aotuman.event.AddCityEvent;
+import com.aotuman.http.callback.HttpCallBack;
 import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.weatherinfo.GetNowWeather;
+import com.aotuman.http.weatherinfo.data.NowWeather;
+import com.aotuman.http.weatherinfo.data.Weather;
+import com.aotuman.view.loadview.WhorlView;
 import com.aotuman.view.sortlistview.CharacterParser;
 import com.aotuman.view.sortlistview.ClearEditText;
 import com.aotuman.view.sortlistview.PinyinComparator;
@@ -44,7 +48,7 @@ public class AddCityActivity extends Activity {
 	private TextView dialog;
 	private SortAdapter adapter;
 	private ClearEditText mClearEditText;
-
+	private WhorlView mWhorlView;
 	/**
 	 * 汉字转换成拼音的类
 	 */
@@ -73,6 +77,7 @@ public class AddCityActivity extends Activity {
 
 		sideBar = (SideBar) findViewById(R.id.sidrbar);
 		dialog = (TextView) findViewById(R.id.dialog);
+		mWhorlView = (WhorlView) findViewById(R.id.loading);
 		sideBar.setTextView(dialog);
 
 		//设置右侧触摸监听
@@ -96,26 +101,45 @@ public class AddCityActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 									int position, long id) {
 				//这里要利用adapter.getItem(position)来获取当前position所对应的对象
-				CityInfo cityInfo = (CityInfo)adapter.getItem(position);
-				Gson gson = new Gson();
+				final CityInfo cityInfo = (CityInfo)adapter.getItem(position);
+				final Gson gson = new Gson();
 				String s = (String) SPUtils.get(AddCityActivity.this,SharePreEvent.CITY_LIST,"");
-				List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+				final List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
 				if(null != ps ){
 					if(ps.contains(cityInfo)){
 						Toast.makeText(getApplication(), "该城市您已经添加了，去看看外面的世界吧", Toast.LENGTH_SHORT).show();
 						return;
 					}
-				}else {
-					ps = new ArrayList<CityInfo>();
-					ps.clear();
 				}
-				ps.add(cityInfo);
-				new GetNowWeather().getNowWeather(cityInfo.citynm);
-				Toast.makeText(getApplication(), cityInfo.citynm+"添加成功", Toast.LENGTH_SHORT).show();
-				SPUtils.put(AddCityActivity.this, SharePreEvent.CITY_LIST,gson.toJson(ps));
-				SPUtils.put(AddCityActivity.this, SharePreEvent.CURRENT_CITY_ID,cityInfo.cityid);
-				RxBus.getDefault().post(new AddCityEvent(cityInfo));
-				finish();
+				mWhorlView.start();
+				new GetNowWeather().getNowWeather(cityInfo.citynm, new HttpCallBack<NowWeather>() {
+					@Override
+					public void callBackRequest() {
+						mWhorlView.stop();
+					}
+
+					@Override
+					public void callBackEntity(NowWeather object) {
+						List<CityInfo> cityInfos = null;
+						if(null != ps){
+							ps.add(cityInfo);
+							cityInfos = ps;
+						}else {
+							cityInfos = new ArrayList<CityInfo>();
+							cityInfos.add(cityInfo);
+						}
+						Toast.makeText(getApplication(), cityInfo.citynm+"添加成功", Toast.LENGTH_SHORT).show();
+						SPUtils.put(AddCityActivity.this, SharePreEvent.CITY_LIST,gson.toJson(cityInfos));
+						SPUtils.put(AddCityActivity.this, SharePreEvent.CURRENT_CITY_ID,cityInfo.cityid);
+						RxBus.getDefault().post(new AddCityEvent(cityInfo));
+						finish();
+					}
+
+					@Override
+					public void callBackError(Exception e) {
+						Toast.makeText(getApplication(), "网络异常，添加失败！", Toast.LENGTH_SHORT).show();
+					}
+				});
 			}
 		});
 
@@ -152,11 +176,15 @@ public class AddCityActivity extends Activity {
 	 * @return
 	 */
 	private void filledData() {
+		mWhorlView.start();
 		Observable.create(new Observable.OnSubscribe<List<CityInfo>>() {
 
 			@Override
 			public void call(Subscriber<? super List<CityInfo>> subscriber) {
-				subscriber.onNext(CityInfoDataManager.getInstance(AddCityActivity.this).findAllCitys());
+				List<CityInfo> cityInfos = CityInfoDataManager.getInstance(AddCityActivity.this).findAllCitys();
+				// 根据a-z进行排序源数据
+				Collections.sort(cityInfos, pinyinComparator);
+				subscriber.onNext(cityInfos);
 				subscriber.onCompleted();
 			}
 		})
@@ -165,11 +193,10 @@ public class AddCityActivity extends Activity {
 				.subscribe(new Action1<List<CityInfo>>() {
 					@Override
 					public void call(List<CityInfo> list) {
-						// 根据a-z进行排序源数据
-						Collections.sort(list, pinyinComparator);
 						SourceDateList.clear();
 						SourceDateList.addAll(list);
 						adapter.notifyDataSetChanged();
+						mWhorlView.stop();
 					}
 				});
 	}
@@ -197,5 +224,4 @@ public class AddCityActivity extends Activity {
 		Collections.sort(filterDateList, pinyinComparator);
 		adapter.updateListView(filterDateList);
 	}
-
 }

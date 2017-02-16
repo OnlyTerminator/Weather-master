@@ -42,6 +42,14 @@
             android:textSize="30.0dip"
             android:visibility="invisible" />
 
+        <com.aotuman.view.loadview.WhorlView
+            android:id="@+id/loading"
+            android:layout_width="80.0dp"
+            android:layout_height="80.0dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="invisible"/>
+
         <com.aotuman.view.sortlistview.SideBar
             android:id="@+id/sidrbar"
             android:layout_width="30.0dip"

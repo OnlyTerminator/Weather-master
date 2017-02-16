@@ -3,4 +3,7 @@
 
     <color name="lv_click_color">#77AAAAAA</color>
     <color name="text_white">#ffffffff</color>
+    <color name="material_red">#F44336</color>
+    <color name="material_green">#4CAF50</color>
+    <color name="material_blue">#5677fc</color>
 </resources>
