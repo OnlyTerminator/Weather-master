@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.aotuman.adapter.clicklistener.OnItemClickListener;
 import com.aotuman.database.WeatherInfoDataManager;
 import com.aotuman.http.cityinfo.CityInfo;
-import com.aotuman.http.weatherinfo.NowWeather;
-import com.aotuman.http.weatherinfo.Weather;
+import com.aotuman.http.weatherinfo.data.NowWeather;
+import com.aotuman.http.weatherinfo.data.Weather;
 import com.aotuman.weather.R;
 import com.aotuman.weather.TTApplication;
 

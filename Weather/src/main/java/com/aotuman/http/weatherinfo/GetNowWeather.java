@@ -7,6 +7,8 @@ import com.aotuman.database.WeatherInfoDataBaseHelp;
 import com.aotuman.database.WeatherInfoDataManager;
 import com.aotuman.http.okhttp.OkHttpUtils;
 import com.aotuman.http.okhttp.callback.StringCallback;
+import com.aotuman.http.weatherinfo.data.NowWeather;
+import com.aotuman.http.weatherinfo.data.Weather;
 import com.aotuman.weather.TTApplication;
 import com.aotuman.weather.WeatherContext;
 import com.google.gson.Gson;

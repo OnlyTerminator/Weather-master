@@ -8,7 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/RxBusModule/RxBusModule.iml" filepath="$PROJECT_DIR$/RxBusModule/RxBusModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/ShareModule/ShareModule.iml" filepath="$PROJECT_DIR$/ShareModule/ShareModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/Weather/Weather.iml" filepath="$PROJECT_DIR$/Weather/Weather.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Weather-master.iml" filepath="$PROJECT_DIR$/Weather-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Weather-masters.iml" filepath="$PROJECT_DIR$/Weather-masters.iml" />
     </modules>
   </component>
 </project>

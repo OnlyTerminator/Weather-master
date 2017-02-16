@@ -1,4 +1,4 @@
-package com.aotuman.http.weatherinfo;
+package com.aotuman.http.weatherinfo.data;
 
 import java.io.Serializable;
 
