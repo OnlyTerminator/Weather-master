@@ -17,8 +17,6 @@ import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.database.CityInfoDataManager;
 import com.aotuman.event.AddCityEvent;
-import com.aotuman.event.CityChangeEvent;
-import com.aotuman.fragment.AddCityFragment;
 import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.weatherinfo.GetNowWeather;
 import com.aotuman.view.sortlistview.CharacterParser;

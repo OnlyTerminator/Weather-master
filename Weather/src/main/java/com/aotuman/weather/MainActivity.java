@@ -3,7 +3,6 @@ package com.aotuman.weather;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -14,7 +13,6 @@ import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.event.AddCityEvent;
 import com.aotuman.event.DeleteCityEvent;
-import com.aotuman.fragment.CityWeatherFragment;
 import com.aotuman.http.cityinfo.CityInfo;
 import com.aotuman.http.cityinfo.GetWeatherCityInfo;
 import com.google.gson.Gson;
@@ -37,8 +35,8 @@ public class MainActivity extends FragmentActivity {
 	private ViewPager mPageVp;
 	private FloatingActionButton flb;
 	private WeatherFragmentAdapter mFragmentAdapter;
-	private List<Fragment> list = new ArrayList<Fragment>();
-
+	private List<CityInfo> ps = new ArrayList<>();
+	private int currentIndex;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,16 +52,11 @@ public class MainActivity extends FragmentActivity {
 	private void initEvent() {
 		Gson gson = new Gson();
 		String s = (String) SPUtils.get(this,SharePreEvent.CITY_LIST,"");
-		List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
-		if(null != ps && !ps.isEmpty()){
-			for (int i = 0; i < ps.size(); i++){
-				list.add(new CityWeatherFragment());
-			}
-		}
-		mFragmentAdapter = new WeatherFragmentAdapter(
-				this.getSupportFragmentManager(), list);
+		ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+		currentIndex = (int) SPUtils.get(this,SharePreEvent.CURRENT_INDX,0);
+		mFragmentAdapter = new WeatherFragmentAdapter(this.getSupportFragmentManager(), ps);
 		mPageVp.setAdapter(mFragmentAdapter);
-		mPageVp.setCurrentItem(0);
+		mPageVp.setCurrentItem(currentIndex);
 		mPageVp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			/**
@@ -85,7 +78,7 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			public void onPageSelected(int position) {
-				WeatherContext.currentIndex = position;
+				setCurrentIndex(position);
 			}
 		});
 
@@ -116,8 +109,17 @@ public class MainActivity extends FragmentActivity {
 					@Override
 					protected void onEvent(AddCityEvent myEvent) {
 						L.i("MainActivity","addFragment==============");
-						list.add(new CityWeatherFragment());
+						mFragmentAdapter.destroyAllFragment();
+//								list.clear();
+						Gson gson = new Gson();
+						String s = (String) SPUtils.get(MainActivity.this,SharePreEvent.CITY_LIST,"");
+						ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+						mFragmentAdapter = new WeatherFragmentAdapter(MainActivity.this.getSupportFragmentManager(), ps);
+						mPageVp.setAdapter(mFragmentAdapter);
+						mPageVp.setOffscreenPageLimit(8);
 						mFragmentAdapter.notifyDataSetChanged();
+//						mPageVp.setCurrentItem(index);
+//						setCurrentIndex(index);
 					}
 
 					@Override
@@ -150,22 +152,20 @@ public class MainActivity extends FragmentActivity {
 					protected void onEvent(DeleteCityEvent myEvent) {
 						L.i("MainActivity","deleteFragment==============");
 						if(null != myEvent) {
-							if(myEvent.fragmentIndex < list.size()){
+//							if(myEvent.fragmentIndex < list.size()){
 								mFragmentAdapter.destroyAllFragment();
-								list.clear();
+//								list.clear();
 								Gson gson = new Gson();
 								String s = (String) SPUtils.get(MainActivity.this,SharePreEvent.CITY_LIST,"");
-								List<CityInfo> ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
-								if(null != ps && !ps.isEmpty()){
-									for (int i = 0; i < ps.size(); i++){
-										list.add(new CityWeatherFragment());
-									}
-								}
-								mFragmentAdapter = new WeatherFragmentAdapter(MainActivity.this.getSupportFragmentManager(), list);
+								ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
+								mFragmentAdapter = new WeatherFragmentAdapter(MainActivity.this.getSupportFragmentManager(), ps);
 								mPageVp.setAdapter(mFragmentAdapter);
 								mPageVp.setOffscreenPageLimit(8);
 								mFragmentAdapter.notifyDataSetChanged();
-							}
+//								int index = currentIndex < list.size() ? currentIndex : 0;
+//								mPageVp.setCurrentItem(index);
+//								setCurrentIndex(index);
+//							}
 						}
 					}
 
@@ -220,5 +220,10 @@ public class MainActivity extends FragmentActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+	}
+
+	private void setCurrentIndex(int index){
+		currentIndex = index;
+		SPUtils.put(MainActivity.this,SharePreEvent.CURRENT_INDX,currentIndex);
 	}
 }

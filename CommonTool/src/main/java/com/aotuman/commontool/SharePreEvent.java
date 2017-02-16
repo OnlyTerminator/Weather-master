@@ -6,5 +6,6 @@ package com.aotuman.commontool;
 
 public enum SharePreEvent {
     CITY_LIST,
-    CURRENT_CITY_ID
+    CURRENT_CITY_ID,
+    CURRENT_INDX,
 }

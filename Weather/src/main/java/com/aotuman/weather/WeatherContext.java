@@ -18,6 +18,4 @@ public class WeatherContext {
     public static String apppkey = "21622";
     public static String Secret = "7fb445b125b7385590c105c79eb1f544";
     public static String Sign = "10a29617e1ace74cab0fdd255cfdf6e5";
-    public static List<CityInfo> cityList = new ArrayList<CityInfo>();
-    public static int currentIndex = 0;
 }
