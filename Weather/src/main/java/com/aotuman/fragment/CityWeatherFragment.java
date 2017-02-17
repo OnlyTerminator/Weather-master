@@ -3,11 +3,14 @@ package com.aotuman.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aotuman.adapter.CityWeatherAdapter;
 import com.aotuman.basetools.L;
 import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
@@ -30,6 +33,7 @@ public class CityWeatherFragment extends Fragment {
     private TextView tv_city_name;
     private TextView tv_city_weather;
     private TextView tv_city_temp;
+    private RecyclerView rc_city_weather;
     private Weather mWeather;
 
     @Override
@@ -53,6 +57,7 @@ public class CityWeatherFragment extends Fragment {
         tv_city_name = (TextView) view.findViewById(R.id.tv_city_name);
         tv_city_weather = (TextView) view.findViewById(R.id.tv_city_weather);
         tv_city_temp = (TextView) view.findViewById(R.id.tv_city_temp);
+        rc_city_weather = (RecyclerView) view.findViewById(R.id.recyclerview);
         if(null != mWeather) {
             tv_city_name.setText(mWeather.citynm);
             NowWeather nowWeather = mWeather.nowWeather;
@@ -63,15 +68,13 @@ public class CityWeatherFragment extends Fragment {
         }
 
         TwinklingRefreshLayout refreshLayout = (TwinklingRefreshLayout) view.findViewById(R.id.refresh);
-//        ProgressLayout headerView = new ProgressLayout(getContext());
-//        if(null == refreshLayout){
-//            L.i("CityWeatherFragment","----------------------------------");
-//        } else {
-            BezierLayout headerView = new BezierLayout(this.getContext());
-            refreshLayout.setHeaderView(headerView);
-//        refreshLayout.setFloatRefresh(false);
-            refreshLayout.setPureScrollModeOn(true);
-//        }
+        BezierLayout headerView = new BezierLayout(this.getContext());
+        refreshLayout.setHeaderView(headerView);
+        refreshLayout.setPureScrollModeOn(true);
+
+        rc_city_weather.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        CityWeatherAdapter cityWeatherAdapter = new CityWeatherAdapter(this.getContext());
+        rc_city_weather.setAdapter(cityWeatherAdapter);
     }
 
     private void initData() {
