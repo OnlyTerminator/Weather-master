@@ -1,10 +1,10 @@
-package com.aotuman.http.weatherinfo;
+package com.aotuman.http.weatherinfo.data;
 
 /**
  * Created by 凹凸曼 on 2016/12/14.
  */
 
-public class NowWeather extends WeatherBase{
+public class NowWeather extends WeatherBase {
     public String days;
     public String week;
     public String updatetime;/*历史天气用到，更新时间*/

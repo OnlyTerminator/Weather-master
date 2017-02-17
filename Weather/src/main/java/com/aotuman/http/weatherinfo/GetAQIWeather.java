@@ -3,8 +3,10 @@ package com.aotuman.http.weatherinfo;
 import android.text.TextUtils;
 
 import com.aotuman.basetools.L;
+import com.aotuman.http.callback.HttpCallBack;
 import com.aotuman.http.okhttp.OkHttpUtils;
 import com.aotuman.http.okhttp.callback.StringCallback;
+import com.aotuman.http.weatherinfo.data.AQIWeather;
 import com.aotuman.weather.WeatherContext;
 import com.google.gson.Gson;
 
@@ -19,7 +21,7 @@ import okhttp3.Call;
 
 public class GetAQIWeather {
 
-    public void getAQIWeather(String cityname){
+    public void getAQIWeather(String cityname, final HttpCallBack<AQIWeather> callBack){
         OkHttpUtils.post()
                 .url(WeatherContext.aqiweather)
                 .addParams("app","weather.pm25")
@@ -31,11 +33,13 @@ public class GetAQIWeather {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        callBack.callBackRequest();
+                        callBack.callBackError(e);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        callBack.callBackRequest();
                         L.i("GetNowWeathwe",response);
                         if(!TextUtils.isEmpty(response)){
                             try {
@@ -44,7 +48,8 @@ public class GetAQIWeather {
                                 if("1".equalsIgnoreCase(success)){
                                     String result = jsonObject.optString("result");
                                     if(!TextUtils.isEmpty(result)){
-                                        AQIWeather nowWeather = new Gson().fromJson(result,AQIWeather.class);
+                                        AQIWeather apiWeather = new Gson().fromJson(result,AQIWeather.class);
+                                        callBack.callBackEntity(apiWeather);
                                     }
                                 }
                             } catch (JSONException e) {

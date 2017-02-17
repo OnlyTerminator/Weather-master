@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WhorlView_Style">
+        <attr name="WhorlView_SmallWhorlColor" format="color" />
+        <attr name="WhorlView_MiddleWhorlColor" format="color" />
+        <attr name="WhorlView_BigWhorlColor" format="color" />
+        <attr name="WhorlView_CircleSpeed" format="integer" />
+        <attr name="WhorlView_Parallax">
+            <enum name="fast" value="1" />
+            <enum name="medium" value="0" />
+            <enum name="slow" value="2" />
+        </attr>
+        <attr name="WhorlView_SweepAngle" format="float" />
+        <attr name="WhorlView_StrokeWidth" format="float" />
+    </declare-styleable>
+</resources>

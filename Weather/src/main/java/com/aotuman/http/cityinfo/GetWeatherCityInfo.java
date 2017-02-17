@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.aotuman.basetools.L;
 import com.aotuman.database.CityInfoDataManager;
+import com.aotuman.http.callback.HttpCallBack;
 import com.aotuman.http.okhttp.OkHttpUtils;
 import com.aotuman.http.okhttp.callback.Callback;
 import com.aotuman.http.okhttp.callback.StringCallback;
@@ -56,12 +57,12 @@ public class GetWeatherCityInfo {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+//                        callBack.callBackRequest();
                     }
 
                     @Override
                     public void onResponse(Object response, int id) {
-
+//                        callBack.callBackRequest();
                     }
 
                 });

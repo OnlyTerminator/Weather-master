@@ -1,4 +1,4 @@
-package com.aotuman.http.weatherinfo;
+package com.aotuman.http.weatherinfo.data;
 
 /**
  * Created by 凹凸曼 on 2016/12/16.

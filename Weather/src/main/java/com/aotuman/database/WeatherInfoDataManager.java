@@ -5,18 +5,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.aotuman.http.cityinfo.CityInfo;
-import com.aotuman.http.weatherinfo.AQIWeather;
-import com.aotuman.http.weatherinfo.ForecastWeather;
-import com.aotuman.http.weatherinfo.HistoryWeather;
-import com.aotuman.http.weatherinfo.NowWeather;
-import com.aotuman.http.weatherinfo.Weather;
+import com.aotuman.http.weatherinfo.data.AQIWeather;
+import com.aotuman.http.weatherinfo.data.ForecastWeather;
+import com.aotuman.http.weatherinfo.data.HistoryWeather;
+import com.aotuman.http.weatherinfo.data.NowWeather;
+import com.aotuman.http.weatherinfo.data.Weather;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 凹凸曼 on 2016/12/6.
