@@ -3,7 +3,6 @@ package com.aotuman.weather;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -122,7 +121,6 @@ public class MainActivity extends FragmentActivity {
 					protected void onEvent(AddCityEvent myEvent) {
 						L.i("MainActivity","addFragment==============");
 						mFragmentAdapter.destroyAllFragment();
-//								list.clear();
 						Gson gson = new Gson();
 						String s = (String) SPUtils.get(MainActivity.this,SharePreEvent.CITY_LIST,"");
 						ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
@@ -130,8 +128,12 @@ public class MainActivity extends FragmentActivity {
 						mPageVp.setAdapter(mFragmentAdapter);
 						mPageVp.setOffscreenPageLimit(8);
 						mFragmentAdapter.notifyDataSetChanged();
-//						mPageVp.setCurrentItem(index);
-//						setCurrentIndex(index);
+						if(null != ps) {
+							int index = ps.size() - 1;
+							mPageVp.setCurrentItem(index);
+							setCurrentIndex(index);
+						}
+						mDrawerLayout.closeDrawers();
 					}
 
 					@Override
@@ -164,9 +166,7 @@ public class MainActivity extends FragmentActivity {
 					protected void onEvent(DeleteCityEvent myEvent) {
 						L.i("MainActivity","deleteFragment==============");
 						if(null != myEvent) {
-//							if(myEvent.fragmentIndex < list.size()){
 								mFragmentAdapter.destroyAllFragment();
-//								list.clear();
 								Gson gson = new Gson();
 								String s = (String) SPUtils.get(MainActivity.this,SharePreEvent.CITY_LIST,"");
 								ps = gson.fromJson(s, new TypeToken<List<CityInfo>>(){}.getType());
@@ -174,10 +174,6 @@ public class MainActivity extends FragmentActivity {
 								mPageVp.setAdapter(mFragmentAdapter);
 								mPageVp.setOffscreenPageLimit(8);
 								mFragmentAdapter.notifyDataSetChanged();
-//								int index = currentIndex < list.size() ? currentIndex : 0;
-//								mPageVp.setCurrentItem(index);
-//								setCurrentIndex(index);
-//							}
 						}
 					}
 

@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/CommonTool" />
+            <option value="$PROJECT_DIR$/CustomRebound" />
             <option value="$PROJECT_DIR$/LogModule" />
             <option value="$PROJECT_DIR$/OKHttpModule" />
             <option value="$PROJECT_DIR$/RxBusModule" />

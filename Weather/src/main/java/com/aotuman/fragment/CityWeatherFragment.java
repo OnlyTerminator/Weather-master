@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aotuman.basetools.L;
 import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.database.WeatherInfoDataManager;
@@ -18,6 +19,8 @@ import com.aotuman.weather.R;
 import com.aotuman.weather.WeatherContext;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
 
 import java.util.List;
 
@@ -58,6 +61,17 @@ public class CityWeatherFragment extends Fragment {
                 tv_city_temp.setText(nowWeather.temperature_curr);
             }
         }
+
+        TwinklingRefreshLayout refreshLayout = (TwinklingRefreshLayout) view.findViewById(R.id.refresh);
+//        ProgressLayout headerView = new ProgressLayout(getContext());
+//        if(null == refreshLayout){
+//            L.i("CityWeatherFragment","----------------------------------");
+//        } else {
+            BezierLayout headerView = new BezierLayout(this.getContext());
+            refreshLayout.setHeaderView(headerView);
+//        refreshLayout.setFloatRefresh(false);
+            refreshLayout.setPureScrollModeOn(true);
+//        }
     }
 
     private void initData() {
