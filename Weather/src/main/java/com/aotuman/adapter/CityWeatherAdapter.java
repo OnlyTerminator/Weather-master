@@ -2,22 +2,16 @@ package com.aotuman.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ListView;
 
-import com.aotuman.adapter.clicklistener.OnItemClickListener;
-import com.aotuman.database.WeatherInfoDataManager;
-import com.aotuman.http.cityinfo.CityInfo;
-import com.aotuman.http.weatherinfo.data.NowWeather;
-import com.aotuman.http.weatherinfo.data.Weather;
+import com.aotuman.basetools.L;
+import com.aotuman.http.weatherinfo.data.ForecastWeather;
 import com.aotuman.weather.R;
-import com.aotuman.weather.TTApplication;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,48 +20,71 @@ import java.util.List;
 
 public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.MyViewHolder> {
     private LayoutInflater layoutInflater = null;
-
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_AQI = 1;
+    private static final int TYPE_FORECAST = 2;
+    private static final int TYPE_TODAY_DES = 3;
+    private static final int TYPE_TODAY_CONTENT = 4;
     public CityWeatherAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return 0;
+        L.i("CityAdapter",position+"-------------");
+        return position;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MyViewHolder myViewHolder = null;
-        View view = layoutInflater.inflate(R.layout.item_city_weather, parent, false);
-        myViewHolder = new MyViewHolder(view);
+        View view = null;
+        ForecastWeatherAdapter forecastWeatherAdapter = null;
+        L.i("CityAdapter",viewType+"============");
+        if(viewType == 0) {
+            view = layoutInflater.inflate(R.layout.item_city_weather_title, parent, false);
+        }else if(viewType == 1){
+            view = layoutInflater.inflate(R.layout.item_city_weather_aqi, parent, false);
+        }else if(viewType == 2){
+            view = layoutInflater.inflate(R.layout.item_city_weather_forecast, parent, false);
+            List<ForecastWeather> list = new ArrayList<>();
+            for (int i = 0; i < 5; i++){
+                list.add(new ForecastWeather());
+            }
+            forecastWeatherAdapter  = new ForecastWeatherAdapter(list);
+        }else {
+            view = layoutInflater.inflate(R.layout.item_city_weather_des, parent, false);
+        }
+        myViewHolder = new MyViewHolder(view,forecastWeatherAdapter);
         return myViewHolder;
     }
 
     @Override
     public int getItemCount() {
-        return 15;
+        return 3;
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        L.i("CityAdapter",position+"++++++++++++++"+getItemViewType(position));
+        if(getItemViewType(position) == 2){
+            holder.forecastListView.setAdapter(holder.forecastWeather);
+            holder.forecastWeather.notifyDataSetChanged();
+        }
     }
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_city_name;
-        private LinearLayout ll_ba;
-        private ImageView iv;
-        private TextView tv_city_des;
-        private TextView tv_city_temp;
-
-        public MyViewHolder(View itemView) {
+        private ListView forecastListView;
+        private ForecastWeatherAdapter forecastWeather;
+        public MyViewHolder(View itemView,ForecastWeatherAdapter forecastWeather) {
             super(itemView);
-            tv_city_name = (TextView) itemView.findViewById(R.id.tv_city_name);
-            ll_ba = (LinearLayout) itemView.findViewById(R.id.ll_ba);
-            iv = (ImageView) itemView.findViewById(R.id.iv_city_icon);
-            tv_city_des = (TextView) itemView.findViewById(R.id.tv_city_des);
-            tv_city_temp = (TextView) itemView.findViewById(R.id.tv_city_temp);
+            this.forecastWeather = forecastWeather;
+            initView(itemView);
+        }
+
+        private void initView(View itemView){
+            forecastListView = (ListView) itemView.findViewById(R.id.lv_forecast);
         }
     }
 }

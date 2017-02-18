@@ -28,7 +28,7 @@ public class Platform
 
     public static Platform get()
     {
-        L.e(PLATFORM.getClass().toString());
+        HttpL.e(PLATFORM.getClass().toString());
         return PLATFORM;
     }
 

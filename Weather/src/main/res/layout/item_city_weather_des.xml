@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rl_title">
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="今天：点撒旦好似多哈岁的哈斯圣诞节死的接送撒娇的了撒的借口"
+       android:id="@+id/tv_weather_des"
+       android:textColor="@color/text_white"
+       android:layout_marginLeft="15dp"/>
+
+
+
+</RelativeLayout>
