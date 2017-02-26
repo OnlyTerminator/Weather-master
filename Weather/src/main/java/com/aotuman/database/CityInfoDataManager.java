@@ -87,10 +87,10 @@ public class CityInfoDataManager {
 
     public List<CityInfo> findAllCitys(){
         List<CityInfo> cityInfoList = new ArrayList<>();
-        String sql = "select * from cityinfo where area_3 like ? or area_3 is null";
+        String sql = "select * from cityinfo";
         SQLiteDatabase db = cityInfoDataBaseHelp.getWritableDatabase();
         Cursor cursor;
-        cursor = db.rawQuery(sql,new String[] {"%" + "城区" + "%"});
+        cursor = db.rawQuery(sql,new String[] {});
         if(null != cursor) {
             while (cursor.moveToNext()) {
                 CityInfo cityInfo = new CityInfo();

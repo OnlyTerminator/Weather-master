@@ -54,9 +54,6 @@ public class GetNowWeather {
                                     if(!TextUtils.isEmpty(result)){
                                         NowWeather nowWeather = new Gson().fromJson(result,NowWeather.class);
                                         callBack.callBackEntity(nowWeather);
-                                        Weather weather = new Weather(nowWeather.cityid,nowWeather.citynm,nowWeather.cityno);
-                                        weather.setWeatherInfo(nowWeather,null,null,null);
-                                        WeatherInfoDataManager.getInstance(TTApplication.getInstance()).insertWeatherInfo(weather);
                                     }
                                 }
                             } catch (JSONException e) {

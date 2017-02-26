@@ -25,13 +25,14 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     private static final int TYPE_FORECAST = 2;
     private static final int TYPE_TODAY_DES = 3;
     private static final int TYPE_TODAY_CONTENT = 4;
+
     public CityWeatherAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getItemViewType(int position) {
-        L.i("CityAdapter",position+"-------------");
+        L.i("CityAdapter", position + "-------------");
         return position;
     }
 
@@ -40,34 +41,30 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
         MyViewHolder myViewHolder = null;
         View view = null;
         ForecastWeatherAdapter forecastWeatherAdapter = null;
-        L.i("CityAdapter",viewType+"============");
-        if(viewType == 0) {
-            view = layoutInflater.inflate(R.layout.item_city_weather_title, parent, false);
-        }else if(viewType == 1){
-            view = layoutInflater.inflate(R.layout.item_city_weather_aqi, parent, false);
-        }else if(viewType == 2){
+        L.i("CityAdapter", viewType + "============");
+        if (viewType == 0) {
+//            view = layoutInflater.inflate(R.layout.item_city_weather_title, parent, false);
+//        }else {
             view = layoutInflater.inflate(R.layout.item_city_weather_forecast, parent, false);
             List<ForecastWeather> list = new ArrayList<>();
-            for (int i = 0; i < 5; i++){
+            for (int i = 0; i < 5; i++) {
                 list.add(new ForecastWeather());
             }
-            forecastWeatherAdapter  = new ForecastWeatherAdapter(list);
-        }else {
-            view = layoutInflater.inflate(R.layout.item_city_weather_des, parent, false);
+            forecastWeatherAdapter = new ForecastWeatherAdapter(list);
         }
-        myViewHolder = new MyViewHolder(view,forecastWeatherAdapter);
+        myViewHolder = new MyViewHolder(view, forecastWeatherAdapter);
         return myViewHolder;
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 1;
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        L.i("CityAdapter",position+"++++++++++++++"+getItemViewType(position));
-        if(getItemViewType(position) == 2){
+        L.i("CityAdapter", position + "++++++++++++++" + getItemViewType(position));
+        if (getItemViewType(position) == 0) {
             holder.forecastListView.setAdapter(holder.forecastWeather);
             holder.forecastWeather.notifyDataSetChanged();
         }
@@ -77,13 +74,14 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     class MyViewHolder extends RecyclerView.ViewHolder {
         private ListView forecastListView;
         private ForecastWeatherAdapter forecastWeather;
-        public MyViewHolder(View itemView,ForecastWeatherAdapter forecastWeather) {
+
+        public MyViewHolder(View itemView, ForecastWeatherAdapter forecastWeather) {
             super(itemView);
             this.forecastWeather = forecastWeather;
             initView(itemView);
         }
 
-        private void initView(View itemView){
+        private void initView(View itemView) {
             forecastListView = (ListView) itemView.findViewById(R.id.lv_forecast);
         }
     }

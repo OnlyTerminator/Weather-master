@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <View
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:background="@color/text_white" />
@@ -15,18 +15,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="10dp"
         android:text="空气质量：18"
-        android:textColor="@color/text_white" />
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"/>
 
     <TextView
         android:id="@+id/tv_aqi_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="10dp"
         android:text="空气等级：23"
-        android:textColor="@color/text_white" />
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"/>
 
     <TextView
         android:id="@+id/tv_aqi_des"
@@ -34,9 +36,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="10dp"
         android:text="空气描述：优"
-        android:textColor="@color/text_white" />
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"/>
 
     <TextView
         android:id="@+id/tv_aqi_message"
@@ -46,13 +49,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
         android:text="健康提示：空气很好，多参加室外活动！"
-        android:textColor="@color/text_white" />
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_below="@id/tv_aqi_message"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="5dp"
         android:background="@color/text_white" />
 
 </RelativeLayout>

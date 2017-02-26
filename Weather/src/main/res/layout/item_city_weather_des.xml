@@ -2,14 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/rl_title">
+    android:id="@+id/rl_des">
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="0.1dp"
+       android:background="@color/text_white" />
    <TextView
+       android:layout_marginTop="5dp"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:text="今天：点撒旦好似多哈岁的哈斯圣诞节死的接送撒娇的了撒的借口"
        android:id="@+id/tv_weather_des"
        android:textColor="@color/text_white"
        android:layout_marginLeft="15dp"/>
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="0.1dp"
+       android:layout_below="@id/tv_weather_des"
+       android:layout_marginTop="5dp"
+       android:background="@color/text_white" />
 
 
 

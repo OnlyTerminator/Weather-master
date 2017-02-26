@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_content_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:text="当前城市：    嘉兴市"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_weather_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        android:text="当前温度：    20°"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_content_up_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="16dp"
+        android:text="最高湿度：    87.8℉"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_content_low_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        android:text="最低湿度：    30.8℉"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_content_wind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="16dp"
+        android:text="风向：    微风"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:id="@+id/tv_content_winp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        android:text="风力：    3级"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_content_aqi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="16dp"
+        android:text="空气质量指数：    30"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:id="@+id/tv_content_aqi_des"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        android:text="空气质量：    良好"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/weather_content_size"
+        android:layout_gravity="center_horizontal"/>
+</LinearLayout>

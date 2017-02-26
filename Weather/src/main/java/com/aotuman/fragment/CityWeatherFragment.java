@@ -18,6 +18,7 @@ import com.aotuman.http.weatherinfo.data.Weather;
 import com.aotuman.weather.R;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
+import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
 
 
 public class CityWeatherFragment extends Fragment {
@@ -62,6 +63,8 @@ public class CityWeatherFragment extends Fragment {
         TwinklingRefreshLayout refreshLayout = (TwinklingRefreshLayout) view.findViewById(R.id.refresh);
         BezierLayout headerView = new BezierLayout(this.getContext());
         refreshLayout.setHeaderView(headerView);
+        View exHeader = View.inflate(this.getContext(), R.layout.item_city_weather_title, null);
+        refreshLayout.addFixedExHeader(exHeader);
         refreshLayout.setPureScrollModeOn(true);
 
         rc_city_weather.setLayoutManager(new LinearLayoutManager(this.getContext()));
