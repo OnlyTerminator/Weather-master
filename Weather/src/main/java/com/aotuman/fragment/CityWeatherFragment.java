@@ -1,13 +1,18 @@
 package com.aotuman.fragment;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aotuman.adapter.CityWeatherAdapter;
@@ -18,7 +23,16 @@ import com.aotuman.http.weatherinfo.data.Weather;
 import com.aotuman.weather.R;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
-import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class CityWeatherFragment extends Fragment {
@@ -28,6 +42,7 @@ public class CityWeatherFragment extends Fragment {
     private TextView tv_city_temp;
     private RecyclerView rc_city_weather;
     private Weather mWeather;
+    private LinearLayout mllWeatherBack;
 
     @Override
     public void onAttach(Activity activity) {
@@ -36,8 +51,8 @@ public class CityWeatherFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(null == mView){
-            mView = inflater.inflate(R.layout.one_frag_layout,container,false);
+        if (null == mView) {
+            mView = inflater.inflate(R.layout.one_frag_layout, container, false);
 
             initData();
 
@@ -51,10 +66,11 @@ public class CityWeatherFragment extends Fragment {
         tv_city_weather = (TextView) view.findViewById(R.id.tv_city_weather);
         tv_city_temp = (TextView) view.findViewById(R.id.tv_city_temp);
         rc_city_weather = (RecyclerView) view.findViewById(R.id.recyclerview);
-        if(null != mWeather) {
+        mllWeatherBack = (LinearLayout) view.findViewById(R.id.ll_weather_back);
+        if (null != mWeather) {
             tv_city_name.setText(mWeather.citynm);
             NowWeather nowWeather = mWeather.nowWeather;
-            if(null != nowWeather) {
+            if (null != nowWeather) {
                 tv_city_weather.setText(nowWeather.weather);
                 tv_city_temp.setText(nowWeather.temperature_curr);
             }
@@ -75,7 +91,7 @@ public class CityWeatherFragment extends Fragment {
     private void initData() {
         Bundle bundle = getArguments();
         CityInfo cityInfo = (CityInfo) bundle.get("key_weather_page_data");
-        String  cityId = cityInfo.cityid;
+        String cityId = cityInfo.cityid;
         mWeather = WeatherInfoDataManager.getInstance(this.getContext()).findWeatherByCityID(cityId);
     }
 
