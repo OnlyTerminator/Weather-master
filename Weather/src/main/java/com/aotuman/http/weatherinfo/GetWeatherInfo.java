@@ -25,16 +25,16 @@ public class GetWeatherInfo {
             @Override
             public void callBackEntity(AQIWeather object) {
                 weather.aqiWeather = object;
-                if(count == 3){
-                    weatherCallBack.success(weather);
-                }
+//                if(count == 3){
+//                    weatherCallBack.success(weather);
+//                }
             }
 
             @Override
             public void callBackError(Exception e) {
-                if(count == 3){
-                    weatherCallBack.failed();
-                }
+//                if(count == 3){
+//                    weatherCallBack.failed();
+//                }
             }
         });
 
@@ -47,16 +47,16 @@ public class GetWeatherInfo {
             @Override
             public void callBackEntity(NowWeather object) {
                 weather.nowWeather = object;
-                if(count == 3){
+//                if(count == 3){
                     weatherCallBack.success(weather);
-                }
+//                }
             }
 
             @Override
             public void callBackError(Exception e) {
-                if(count == 3){
-                    weatherCallBack.failed();
-                }
+//                if(count == 3){
+//                    weatherCallBack.failed();
+//                }
             }
         });
 
@@ -69,16 +69,16 @@ public class GetWeatherInfo {
             @Override
             public void callBackEntity(ForecastWeather object) {
                 weather.forecastWeather = object;
-                if(count == 3){
-                    weatherCallBack.success(weather);
-                }
+//                if(count == 3){
+//                    weatherCallBack.success(weather);
+//                }
             }
 
             @Override
             public void callBackError(Exception e) {
-                if(count == 3){
-                    weatherCallBack.failed();
-                }
+//                if(count == 3){
+//                    weatherCallBack.failed();
+//                }
             }
         });
     }

@@ -7,23 +7,23 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import com.aotuman.basetools.L;
 import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
+import com.aotuman.database.CityInfoDBCreat;
 import com.aotuman.event.AddCityEvent;
 import com.aotuman.event.DeleteCityEvent;
 import com.aotuman.fragment.AddCityFragment;
 import com.aotuman.http.cityinfo.CityInfo;
-import com.aotuman.http.cityinfo.GetWeatherCityInfo;
 import com.aotuman.http.okhttp.OkHttpUtils;
 import com.aotuman.http.okhttp.callback.Callback;
-import com.aotuman.http.okhttp.request.OkHttpRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.socialize.ShareAction;
@@ -31,9 +31,6 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,12 +39,8 @@ import me.yokeyword.rxbus.RxBusSubscriber;
 import me.yokeyword.rxbus.RxSubscriptions;
 import okhttp3.Call;
 import okhttp3.Response;
-import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends FragmentActivity {
     private ViewPager mPageVp;
@@ -215,9 +208,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void initData() {
-        new GetWeatherCityInfo().getWeatherInfo();
-//        setWeatherBackgroung("https://www.dujin.org/sys/bing/1366.php");
-        getImage();
+        new CityInfoDBCreat().loadCityDB(this);
     }
 
     private void initView() {
@@ -289,5 +280,15 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
+
     }
 }
