@@ -48,7 +48,6 @@ public class WeatherInfoDataManager {
     }
 
     public Weather findWeatherByCityID(String cityID){
-        List<CityInfo> cityInfoList = new ArrayList<>();
         String sql = "select * from weatherinfo where cityid like ?";
         SQLiteDatabase db = weatherInfoDataBaseHelp.getWritableDatabase();
         Cursor cursor;
