@@ -1,14 +1,10 @@
 package com.aotuman.fragment;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +19,6 @@ import com.aotuman.http.weatherinfo.data.Weather;
 import com.aotuman.weather.R;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 
 public class CityWeatherFragment extends Fragment {

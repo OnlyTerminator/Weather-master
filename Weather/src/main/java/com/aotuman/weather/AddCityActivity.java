@@ -128,6 +128,9 @@ public class AddCityActivity extends Activity {
                             cityInfos = new ArrayList<CityInfo>();
                             cityInfos.add(cityInfo);
                         }
+                        weather.citynm = cityInfo.citynm;
+                        weather.cityid = cityInfo.cityid;
+                        weather.cityno = cityInfo.cityno;
                         Toast.makeText(getApplication(), cityInfo.citynm + "添加成功", Toast.LENGTH_SHORT).show();
                         WeatherInfoDataManager.getInstance(TTApplication.getInstance()).insertWeatherInfo(weather);
                         SPUtils.put(AddCityActivity.this, SharePreEvent.CITY_LIST, gson.toJson(cityInfos));
