@@ -6,9 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.aotuman.basetools.L;
+import com.aotuman.http.weatherinfo.data.AQIWeather;
 import com.aotuman.http.weatherinfo.data.ForecastWeather;
+import com.aotuman.http.weatherinfo.data.NowWeather;
+import com.aotuman.http.weatherinfo.data.Weather;
 import com.aotuman.weather.R;
 
 import java.util.ArrayList;
@@ -20,14 +24,16 @@ import java.util.List;
 
 public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.MyViewHolder> {
     private LayoutInflater layoutInflater = null;
+    private Weather mWeather;
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_AQI = 1;
     private static final int TYPE_FORECAST = 2;
     private static final int TYPE_TODAY_DES = 3;
     private static final int TYPE_TODAY_CONTENT = 4;
 
-    public CityWeatherAdapter(Context context) {
+    public CityWeatherAdapter(Context context,Weather weather) {
         this.layoutInflater = LayoutInflater.from(context);
+        this.mWeather = weather;
     }
 
     @Override
@@ -74,15 +80,52 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     class MyViewHolder extends RecyclerView.ViewHolder {
         private ListView forecastListView;
         private ForecastWeatherAdapter forecastWeather;
-
+        private TextView tv_weather_des;
+        private TextView tv_content_city;
+        private TextView tv_weather_temp;
+        private TextView tv_content_up_humidity;
+        private TextView tv_content_low_humidity;
+        private TextView tv_content_wind;
+        private TextView tv_content_winp;
+        private TextView tv_content_aqi;
+        private TextView tv_content_aqi_des;
         public MyViewHolder(View itemView, ForecastWeatherAdapter forecastWeather) {
             super(itemView);
             this.forecastWeather = forecastWeather;
             initView(itemView);
+            setData();
         }
 
         private void initView(View itemView) {
             forecastListView = (ListView) itemView.findViewById(R.id.lv_forecast);
+            tv_weather_des = (TextView) itemView.findViewById(R.id.tv_weather_des);
+            tv_content_city = (TextView) itemView.findViewById(R.id.tv_content_city);
+            tv_weather_temp = (TextView) itemView.findViewById(R.id.tv_weather_temp);
+            tv_content_up_humidity = (TextView) itemView.findViewById(R.id.tv_content_up_humidity);
+            tv_content_low_humidity = (TextView) itemView.findViewById(R.id.tv_content_low_humidity);
+            tv_content_wind = (TextView) itemView.findViewById(R.id.tv_content_wind);
+            tv_content_winp = (TextView) itemView.findViewById(R.id.tv_content_winp);
+            tv_content_aqi = (TextView) itemView.findViewById(R.id.tv_content_aqi);
+            tv_content_aqi_des = (TextView) itemView.findViewById(R.id.tv_content_aqi_des);
+        }
+
+        private void setData(){
+            if(null != mWeather){
+                NowWeather nowWeather = mWeather.nowWeather;
+                AQIWeather aqiWeather = mWeather.aqiWeather;
+                tv_content_city.setText(getTextViewContent(tv_content_city)+mWeather.citynm);
+                tv_weather_temp.setText(getTextViewContent(tv_weather_temp)+nowWeather.temperature_curr);
+                tv_content_up_humidity.setText(getTextViewContent(tv_content_up_humidity)+nowWeather.humidity);
+                tv_content_low_humidity.setText(getTextViewContent(tv_content_low_humidity)+nowWeather.humi_low);
+                tv_content_wind.setText(getTextViewContent(tv_content_wind)+nowWeather.wind);
+                tv_content_winp.setText(getTextViewContent(tv_content_winp)+nowWeather.winp);
+                tv_content_aqi.setText(getTextViewContent(tv_content_aqi)+aqiWeather.aqi);
+                tv_content_aqi_des.setText(getTextViewContent(tv_content_aqi_des)+aqiWeather.aqi_remark);
+            }
+        }
+
+        private String getTextViewContent(TextView tv){
+            return tv.getText().toString().trim();
         }
     }
 }
