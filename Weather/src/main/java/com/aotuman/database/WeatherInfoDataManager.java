@@ -43,7 +43,7 @@ public class WeatherInfoDataManager {
         String aqiWeather = gson.toJson(weather.aqiWeather);
         String historyWeather = gson.toJson(weather.historyWeather);
         String forecastWeather = gson.toJson(weather.forecastWeather);
-        db.execSQL(sql, new Object[]{weather.cityid, weather.citynm, weather.cityno, nowWeather, "", "", ""});
+        db.execSQL(sql, new Object[]{weather.cityid, weather.citynm, weather.cityno, nowWeather, aqiWeather, historyWeather, forecastWeather});
         db.close();
     }
 
