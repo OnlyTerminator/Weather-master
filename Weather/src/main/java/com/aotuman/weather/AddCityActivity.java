@@ -18,6 +18,7 @@ import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.database.CityInfoDataManager;
 import com.aotuman.database.WeatherInfoDataManager;
 import com.aotuman.event.AddCityEvent;
+import com.aotuman.fragment.AddCityFragment;
 import com.aotuman.http.callback.HttpCallBack;
 import com.aotuman.http.callback.WeatherCallBack;
 import com.aotuman.http.cityinfo.CityInfo;
@@ -25,6 +26,7 @@ import com.aotuman.http.weatherinfo.GetNowWeather;
 import com.aotuman.http.weatherinfo.GetWeatherInfo;
 import com.aotuman.http.weatherinfo.data.NowWeather;
 import com.aotuman.http.weatherinfo.data.Weather;
+import com.aotuman.view.loadview.LoadingDialog;
 import com.aotuman.view.loadview.WhorlView;
 import com.aotuman.view.sortlistview.CharacterParser;
 import com.aotuman.view.sortlistview.ClearEditText;
@@ -51,7 +53,7 @@ public class AddCityActivity extends Activity {
     private TextView dialog;
     private SortAdapter adapter;
     private ClearEditText mClearEditText;
-    private WhorlView mWhorlView;
+    private LoadingDialog mLoading;
     /**
      * 汉字转换成拼音的类
      */
@@ -73,6 +75,7 @@ public class AddCityActivity extends Activity {
     }
 
     private void initViews() {
+        mLoading = new LoadingDialog(AddCityActivity.this, "玩命加载中...");
         //实例化汉字转拼音类
         characterParser = CharacterParser.getInstance();
 
@@ -80,7 +83,6 @@ public class AddCityActivity extends Activity {
 
         sideBar = (SideBar) findViewById(R.id.sidrbar);
         dialog = (TextView) findViewById(R.id.dialog);
-        mWhorlView = (WhorlView) findViewById(R.id.loading);
         sideBar.setTextView(dialog);
 
         //设置右侧触摸监听
@@ -115,11 +117,11 @@ public class AddCityActivity extends Activity {
                         return;
                     }
                 }
-                mWhorlView.start();
+                mLoading.show();
                 new GetWeatherInfo().getWeather(cityInfo.citynm, new WeatherCallBack() {
                     @Override
                     public void success(Weather weather) {
-                        mWhorlView.stop();
+                        mLoading.close();
                         List<CityInfo> cityInfos = null;
                         if (null != ps) {
                             ps.add(cityInfo);
@@ -141,7 +143,7 @@ public class AddCityActivity extends Activity {
 
                     @Override
                     public void failed() {
-                        mWhorlView.stop();
+                        mLoading.close();
                         Toast.makeText(getApplication(), "网络异常，添加失败！", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -182,7 +184,7 @@ public class AddCityActivity extends Activity {
      * @return
      */
     private void filledData() {
-        mWhorlView.start();
+        mLoading.show();
         Observable.create(new Observable.OnSubscribe<List<CityInfo>>() {
 
             @Override
@@ -202,7 +204,7 @@ public class AddCityActivity extends Activity {
                         SourceDateList.clear();
                         SourceDateList.addAll(list);
                         adapter.notifyDataSetChanged();
-                        mWhorlView.stop();
+                        mLoading.close();
                     }
                 });
     }
@@ -230,5 +232,11 @@ public class AddCityActivity extends Activity {
         // 根据a-z进行排序
         Collections.sort(filterDateList, pinyinComparator);
         adapter.updateListView(filterDateList);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLoading = null;
     }
 }

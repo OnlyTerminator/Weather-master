@@ -3,8 +3,6 @@ package com.aotuman.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +11,18 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.aotuman.adapter.CityWeatherAdapter;
 import com.aotuman.adapter.ForecastWeatherAdapter;
 import com.aotuman.database.WeatherInfoDataManager;
+import com.aotuman.event.RefreshListener;
+import com.aotuman.http.callback.WeatherCallBack;
 import com.aotuman.http.cityinfo.CityInfo;
+import com.aotuman.http.weatherinfo.GetWeatherInfo;
 import com.aotuman.http.weatherinfo.data.AQIWeather;
 import com.aotuman.http.weatherinfo.data.NowWeather;
 import com.aotuman.http.weatherinfo.data.Weather;
+import com.aotuman.view.MainScrollView;
 import com.aotuman.weather.R;
-import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
+import com.aotuman.weather.TTApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,9 +33,19 @@ public class CityWeatherFragment extends Fragment {
     private TextView tv_city_name;
     private TextView tv_city_weather;
     private TextView tv_city_temp;
-    //    private RecyclerView rc_city_weather;
     private Weather mWeather;
     private LinearLayout mllWeatherBack;
+
+    private TextView tv_low_temp;
+    private TextView tv_up_temp;
+    private TextView tv_week;
+
+    private TextView tv_aqi_num;
+    private TextView tv_aqi_level;
+    private TextView tv_aqi_des;
+    private TextView tv_aqi_message;
+
+    private MainScrollView mMainScrollView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -55,36 +65,48 @@ public class CityWeatherFragment extends Fragment {
     }
 
     private void initView(View view) {
-        NowWeather nowWeather = null;
+        mMainScrollView = (MainScrollView) view.findViewById(R.id.refresh);
         tv_city_name = (TextView) view.findViewById(R.id.tv_city_name);
         tv_city_weather = (TextView) view.findViewById(R.id.tv_city_weather);
         tv_city_temp = (TextView) view.findViewById(R.id.tv_city_temp);
-//        rc_city_weather = (RecyclerView) view.findViewById(R.id.recyclerview);
-        mllWeatherBack = (LinearLayout) view.findViewById(R.id.ll_weather_back);
-        if (null != mWeather) {
-            tv_city_name.setText(mWeather.citynm);
-            nowWeather = mWeather.nowWeather;
-            if (null != nowWeather) {
-                tv_city_weather.setText(nowWeather.weather);
-                tv_city_temp.setText(nowWeather.temperature_curr);
-            }
-        }
-//        rc_city_weather.setLayoutManager(new LinearLayoutManager(getContext()));
-//        CityWeatherAdapter cityWeatherAdapter = new CityWeatherAdapter(getContext(), mWeather);
-//        rc_city_weather.setAdapter(cityWeatherAdapter);
-        initWeatherTitle(view,nowWeather);
 
+        tv_low_temp = (TextView) view.findViewById(R.id.tv_low_temp);
+        tv_up_temp = (TextView) view.findViewById(R.id.tv_up_temp);
+        tv_week = (TextView) view.findViewById(R.id.tv_week);
+
+        tv_aqi_num = (TextView) view.findViewById(R.id.tv_aqi_num);
+        tv_aqi_level = (TextView) view.findViewById(R.id.tv_aqi_level);
+        tv_aqi_des = (TextView) view.findViewById(R.id.tv_aqi_des);
+        tv_aqi_message = (TextView) view.findViewById(R.id.tv_aqi_message);
+
+        mllWeatherBack = (LinearLayout) view.findViewById(R.id.ll_weather_back);
+
+        mMainScrollView.setOnRefreshListener(new RefreshListener() {
+            @Override
+            public void refreshWeather() {
+                new GetWeatherInfo().getWeather(mWeather.citynm, new WeatherCallBack() {
+                    @Override
+                    public void success(Weather weather) {
+                        if(null != weather){
+                            weather.citynm = mWeather.citynm;
+                            weather.cityid = mWeather.cityid;
+                            weather.cityno = mWeather.cityno;
+                            mWeather = weather;
+                            WeatherInfoDataManager.getInstance(TTApplication.getInstance()).insertWeatherInfo(weather);
+                            setData();
+                        }
+                    }
+
+                    @Override
+                    public void failed() {
+
+                    }
+                });
+            }
+        });
         initTwinkView(view);
 
         setData();
-
-//        TwinklingRefreshLayout refreshLayout = (TwinklingRefreshLayout) view.findViewById(R.id.refresh);
-//        BezierLayout headerView = new BezierLayout(this.getContext());
-//        refreshLayout.setHeaderView(headerView);
-//        View exHeader = View.inflate(this.getContext(), R.layout.item_city_weather_title, null);
-//        initWeatherTitle(exHeader, nowWeather);
-//        refreshLayout.addFixedExHeader(exHeader);
-//        refreshLayout.setPureScrollModeOn();
 
     }
 
@@ -117,17 +139,33 @@ public class CityWeatherFragment extends Fragment {
         if (null != mWeather) {
             NowWeather nowWeather = mWeather.nowWeather;
             AQIWeather aqiWeather = mWeather.aqiWeather;
+
+            tv_city_name.setText(mWeather.citynm);
+
             if (null != nowWeather) {
-                tv_content_city.setText(getTextViewContent(tv_content_city) + mWeather.citynm);
-                tv_weather_temp.setText(getTextViewContent(tv_weather_temp) + nowWeather.temperature_curr);
-                tv_content_up_humidity.setText(getTextViewContent(tv_content_up_humidity) + nowWeather.humidity);
-                tv_content_low_humidity.setText(getTextViewContent(tv_content_low_humidity) + nowWeather.humi_low);
-                tv_content_wind.setText(getTextViewContent(tv_content_wind) + nowWeather.wind);
-                tv_content_winp.setText(getTextViewContent(tv_content_winp) + nowWeather.winp);
+                tv_city_weather.setText(nowWeather.weather);
+                tv_city_temp.setText(nowWeather.temperature_curr);
+                tv_city_name.setText(nowWeather.citynm);
+
+                tv_low_temp.setText(nowWeather.temp_low);
+                tv_up_temp.setText(nowWeather.temp_high);
+                tv_week.setText(nowWeather.week);
+
+                tv_content_city.setText("当前城市：  " + mWeather.citynm);
+                tv_weather_temp.setText("当前温度：  "+ nowWeather.temperature_curr);
+                tv_content_up_humidity.setText("当前湿度:   " + nowWeather.humidity);
+//                tv_content_low_humidity.setText(getTextViewContent(tv_content_low_humidity) + nowWeather.humi_low);
+                tv_content_wind.setText("风向：   " + nowWeather.wind);
+                tv_content_winp.setText("风力：   " + nowWeather.winp);
             }
             if (null != aqiWeather) {
-                tv_content_aqi.setText(getTextViewContent(tv_content_aqi) + aqiWeather.aqi);
-                tv_content_aqi_des.setText(getTextViewContent(tv_content_aqi_des) + aqiWeather.aqi_remark);
+                tv_aqi_num.setText("空气质量：" + aqiWeather.aqi);
+                tv_aqi_level.setText("空气等级：" + aqiWeather.aqi_levid);
+                tv_aqi_des.setText("空气描述：" + aqiWeather.aqi_levnm);
+                tv_aqi_message.setText("健康提示：" + aqiWeather.aqi_remark);
+
+                tv_content_aqi.setText("空气质量指数：   " + aqiWeather.aqi);
+                tv_content_aqi_des.setText("空气质量：   " + aqiWeather.aqi_remark);
             }
             forecastWeatherAdapter = new ForecastWeatherAdapter(mWeather.forecastWeather);
             forecastListView.setAdapter(forecastWeatherAdapter);
@@ -166,33 +204,6 @@ public class CityWeatherFragment extends Fragment {
         // listView.getDividerHeight()获取子项间分隔符占用的高度
         // params.height最后得到整个ListView完整显示需要的高度
         listView.setLayoutParams(params);
-    }
-
-    private void initWeatherTitle(View view, NowWeather nowWeather) {
-        TextView tv_low_temp = (TextView) view.findViewById(R.id.tv_low_temp);
-        TextView tv_up_temp = (TextView) view.findViewById(R.id.tv_up_temp);
-        TextView tv_week = (TextView) view.findViewById(R.id.tv_week);
-        long time = System.currentTimeMillis();
-        Date date = new Date(time);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
-        tv_week.setText(simpleDateFormat.format(date));
-        if (null != nowWeather) {
-            tv_low_temp.setText(nowWeather.temp_low);
-            tv_up_temp.setText(nowWeather.temp_high);
-        }
-
-        TextView tv_aqi_num = (TextView) view.findViewById(R.id.tv_aqi_num);
-        TextView tv_aqi_level = (TextView) view.findViewById(R.id.tv_aqi_level);
-        TextView tv_aqi_des = (TextView) view.findViewById(R.id.tv_aqi_des);
-        TextView tv_aqi_message = (TextView) view.findViewById(R.id.tv_aqi_message);
-        AQIWeather aqiWeather = mWeather == null ? null : mWeather.aqiWeather;
-        if (null != aqiWeather) {
-            tv_aqi_num.setText("空气质量：" + aqiWeather.aqi);
-            tv_aqi_level.setText("空气等级：" + aqiWeather.aqi_levid);
-            tv_aqi_des.setText("空气描述：" + aqiWeather.aqi_levnm);
-            tv_aqi_message.setText("健康提示：" + aqiWeather.aqi_remark);
-        }
-
     }
 
     private void initData() {

@@ -3,11 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CommonTool/CommonTool.iml" filepath="$PROJECT_DIR$/CommonTool/CommonTool.iml" />
-      <module fileurl="file://$PROJECT_DIR$/CustomRebound/CustomRebound.iml" filepath="$PROJECT_DIR$/CustomRebound/CustomRebound.iml" />
       <module fileurl="file://$PROJECT_DIR$/LogModule/LogModule.iml" filepath="$PROJECT_DIR$/LogModule/LogModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/OKHttpModule/OKHttpModule.iml" filepath="$PROJECT_DIR$/OKHttpModule/OKHttpModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/RxBusModule/RxBusModule.iml" filepath="$PROJECT_DIR$/RxBusModule/RxBusModule.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ShareModule/ShareModule.iml" filepath="$PROJECT_DIR$/ShareModule/ShareModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/Weather/Weather.iml" filepath="$PROJECT_DIR$/Weather/Weather.iml" />
       <module fileurl="file://$PROJECT_DIR$/Weather-master.iml" filepath="$PROJECT_DIR$/Weather-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/Weather-masters.iml" filepath="$PROJECT_DIR$/Weather-masters.iml" />

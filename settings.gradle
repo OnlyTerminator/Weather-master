@@ -1,5 +1,5 @@
-include ':Weather', ':ShareModule', ':CommonTool'
+include ':Weather'
+include ':CommonTool'
 include ':OKHttpModule'
 include ':LogModule'
 include ':RxBusModule'
-include ':CustomRebound'

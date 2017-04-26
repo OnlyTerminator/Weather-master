@@ -7,6 +7,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ScrollView;
+
+import com.aotuman.event.RefreshListener;
+
 /**
  * Created by aotuman on 2017/4/26.
  */
@@ -19,6 +22,7 @@ public class MainScrollView extends ScrollView {
     private Rect normal = new Rect();
     private static final int size = 3;
 
+    private RefreshListener mRefreshListener;
     public MainScrollView(Context context) {
         super(context);
     }
@@ -87,12 +91,18 @@ public class MainScrollView extends ScrollView {
     // 开启动画移动
     public void animation() {
         // 开启移动动画
-        TranslateAnimation ta = new TranslateAnimation(0, 0, inner.getTop() - normal.top, 0);
+        int count = inner.getTop() - normal.top;
+        TranslateAnimation ta = new TranslateAnimation(0, 0, count, 0);
         ta.setDuration(200);
         inner.startAnimation(ta);
         // 设置回到正常的布局位置
         inner.layout(normal.left, normal.top, normal.right, normal.bottom);
         normal.setEmpty();
+        if (count > 50){
+            if(null != mRefreshListener){
+                mRefreshListener.refreshWeather();
+            }
+        }
     }
 
     // 是否需要开启动画
@@ -110,4 +120,7 @@ public class MainScrollView extends ScrollView {
         return false;
     }
 
+    public void setOnRefreshListener(RefreshListener refreshListener){
+        mRefreshListener = refreshListener;
+    }
 }
