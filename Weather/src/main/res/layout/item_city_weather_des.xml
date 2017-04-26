@@ -21,7 +21,4 @@
        android:layout_below="@id/tv_weather_des"
        android:layout_marginTop="5dp"
        android:background="@color/text_white" />
-
-
-
 </RelativeLayout>

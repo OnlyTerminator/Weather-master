@@ -107,9 +107,10 @@ public class MainActivity extends FragmentActivity {
         flb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ShareAction(MainActivity.this).withText("hello")
-                        .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.WEIXIN)
-                        .setCallback(umShareListener).open();
+//                new ShareAction(MainActivity.this).withText("hello")
+//                        .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.WEIXIN)
+//                        .setCallback(umShareListener).open();
+                Toast.makeText(MainActivity.this,"此功能暂未开通，敬请期待！",Toast.LENGTH_SHORT).show();
             }
         });
 

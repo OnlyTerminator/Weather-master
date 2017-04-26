@@ -35,12 +35,12 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:25.0.0'
+    compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    compile 'com.android.support:design:25.2.0'
     compile 'com.google.code.gson:gson:2.6.2'
     compile project(':OKHttpModule')
     compile project(':LogModule')
     compile project(':ShareModule')
     compile project(':RxBusModule')
     compile project(':CommonTool')
-    compile project(':CustomRebound')
 }

@@ -3,59 +3,207 @@
     android:id="@+id/ll_weather_back"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/back">
+    android:background="@drawable/back"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <TextView
-        android:layout_marginTop="40dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_white"
-        android:text="@string/city_name"
-        android:textSize="32dp"
-        android:id="@+id/tv_city_name"
-        android:includeFontPadding="false"
-        android:fontFamily="sans-serif-thin"
-        android:layout_centerHorizontal="true"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="晴天"
-        android:textColor="@color/text_white"
-        android:layout_below="@id/tv_city_name"
-        android:textSize="16dp"
-        android:id="@+id/tv_city_weather"
-        android:layout_marginTop="6dp"
-        android:layout_centerHorizontal="true"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="13°"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/text_white"
-        android:textSize="60dp"
-        android:layout_below="@id/tv_city_weather"
-        android:layout_marginTop="16dp"
-        android:id="@+id/tv_city_temp"
-        android:includeFontPadding="false"
-        android:fontFamily="sans-serif-thin"
-        />
+
+        <TextView
+            android:id="@+id/tv_city_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:fontFamily="sans-serif-thin"
+            android:includeFontPadding="false"
+            android:text="@string/city_name"
+            android:textColor="@color/text_white"
+            android:textSize="32dp" />
+
+        <TextView
+            android:id="@+id/tv_city_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_city_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:text="晴天"
+            android:textColor="@color/text_white"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/tv_city_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_city_weather"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-thin"
+            android:includeFontPadding="false"
+            android:text="13°"
+            android:textColor="@color/text_white"
+            android:textSize="60dp" />
 
     </RelativeLayout>
 
-    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+    <com.aotuman.view.MainScrollView
         android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="50dp">
+        android:paddingTop="50dp"
+        android:paddingBottom="20dp">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:overScrollMode="never">-->
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never"/>
+            android:layout_height="match_parent">
 
-    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+            <include
+                android:id="@+id/in_title"
+                layout="@layout/item_city_weather_title" />
+
+            <ListView
+                android:id="@+id/lv_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/in_title"
+                android:divider="#00000000"
+                android:dividerHeight="0dip"
+                android:listSelector="@android:color/transparent" />
+
+            <RelativeLayout
+                android:id="@+id/rl_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lv_forecast">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/text_white" />
+
+                <TextView
+                    android:id="@+id/tv_weather_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:text="今天：此功能暂未开通，请大家耐心等待！！！"
+                    android:textColor="@color/text_white" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:layout_below="@id/tv_weather_des"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/text_white" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/rl_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_des"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/tv_content_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:text="当前城市：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size" />
+
+                <TextView
+                    android:id="@+id/tv_weather_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    android:text="当前温度：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size" />
+
+                <TextView
+                    android:id="@+id/tv_content_up_humidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="16dp"
+                    android:text="最高湿度：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size" />
+
+                <TextView
+                    android:id="@+id/tv_content_low_humidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    android:text="最低湿度：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_content_wind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="16dp"
+                    android:text="风向：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size" />
+
+                <TextView
+                    android:id="@+id/tv_content_winp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    android:text="风力：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size" />
+
+                <TextView
+                    android:id="@+id/tv_content_aqi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="16dp"
+                    android:text="空气质量指数：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size" />
+
+                <TextView
+                    android:id="@+id/tv_content_aqi_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    android:text="空气质量：    "
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/weather_content_size" />
+            </LinearLayout>
+        </RelativeLayout>
+        <!--</ScrollView>-->
+
+    </com.aotuman.view.MainScrollView>
 </LinearLayout>

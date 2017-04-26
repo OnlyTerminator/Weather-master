@@ -43,6 +43,7 @@
             android:layout_height="18dp"
             android:layout_centerHorizontal="true"
             android:scaleType="fitXY"
-            android:src="@drawable/cloud_hail" />
+            android:src="@drawable/cloud_hail"
+            android:visibility="gone"/>
     </RelativeLayout>
 </RelativeLayout>

@@ -31,7 +31,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     private static final int TYPE_TODAY_DES = 3;
     private static final int TYPE_TODAY_CONTENT = 4;
 
-    public CityWeatherAdapter(Context context,Weather weather) {
+    public CityWeatherAdapter(Context context, Weather weather) {
         this.layoutInflater = LayoutInflater.from(context);
         this.mWeather = weather;
     }
@@ -52,11 +52,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
 //            view = layoutInflater.inflate(R.layout.item_city_weather_title, parent, false);
 //        }else {
             view = layoutInflater.inflate(R.layout.item_city_weather_forecast, parent, false);
-            List<ForecastWeather> list = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                list.add(new ForecastWeather());
-            }
-            forecastWeatherAdapter = new ForecastWeatherAdapter(list);
+            forecastWeatherAdapter = new ForecastWeatherAdapter(mWeather.forecastWeather);
         }
         myViewHolder = new MyViewHolder(view, forecastWeatherAdapter);
         return myViewHolder;
@@ -73,6 +69,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
         if (getItemViewType(position) == 0) {
             holder.forecastListView.setAdapter(holder.forecastWeather);
             holder.forecastWeather.notifyDataSetChanged();
+            holder.setData();
         }
     }
 
@@ -89,11 +86,11 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
         private TextView tv_content_winp;
         private TextView tv_content_aqi;
         private TextView tv_content_aqi_des;
+
         public MyViewHolder(View itemView, ForecastWeatherAdapter forecastWeather) {
             super(itemView);
             this.forecastWeather = forecastWeather;
             initView(itemView);
-            setData();
         }
 
         private void initView(View itemView) {
@@ -109,22 +106,26 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
             tv_content_aqi_des = (TextView) itemView.findViewById(R.id.tv_content_aqi_des);
         }
 
-        private void setData(){
-            if(null != mWeather){
+        public void setData() {
+            if (null != mWeather) {
                 NowWeather nowWeather = mWeather.nowWeather;
                 AQIWeather aqiWeather = mWeather.aqiWeather;
-                tv_content_city.setText(getTextViewContent(tv_content_city)+mWeather.citynm);
-                tv_weather_temp.setText(getTextViewContent(tv_weather_temp)+nowWeather.temperature_curr);
-                tv_content_up_humidity.setText(getTextViewContent(tv_content_up_humidity)+nowWeather.humidity);
-                tv_content_low_humidity.setText(getTextViewContent(tv_content_low_humidity)+nowWeather.humi_low);
-                tv_content_wind.setText(getTextViewContent(tv_content_wind)+nowWeather.wind);
-                tv_content_winp.setText(getTextViewContent(tv_content_winp)+nowWeather.winp);
-                tv_content_aqi.setText(getTextViewContent(tv_content_aqi)+aqiWeather.aqi);
-                tv_content_aqi_des.setText(getTextViewContent(tv_content_aqi_des)+aqiWeather.aqi_remark);
+                if (null != nowWeather) {
+                    tv_content_city.setText(getTextViewContent(tv_content_city) + mWeather.citynm);
+                    tv_weather_temp.setText(getTextViewContent(tv_weather_temp) + nowWeather.temperature_curr);
+                    tv_content_up_humidity.setText(getTextViewContent(tv_content_up_humidity) + nowWeather.humidity);
+                    tv_content_low_humidity.setText(getTextViewContent(tv_content_low_humidity) + nowWeather.humi_low);
+                    tv_content_wind.setText(getTextViewContent(tv_content_wind) + nowWeather.wind);
+                    tv_content_winp.setText(getTextViewContent(tv_content_winp) + nowWeather.winp);
+                }
+                if (null != aqiWeather) {
+                    tv_content_aqi.setText(getTextViewContent(tv_content_aqi) + aqiWeather.aqi);
+                    tv_content_aqi_des.setText(getTextViewContent(tv_content_aqi_des) + aqiWeather.aqi_remark);
+                }
             }
         }
 
-        private String getTextViewContent(TextView tv){
+        private String getTextViewContent(TextView tv) {
             return tv.getText().toString().trim();
         }
     }
