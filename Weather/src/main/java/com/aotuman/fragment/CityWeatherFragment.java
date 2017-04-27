@@ -21,6 +21,7 @@ import com.aotuman.http.weatherinfo.data.AQIWeather;
 import com.aotuman.http.weatherinfo.data.NowWeather;
 import com.aotuman.http.weatherinfo.data.Weather;
 import com.aotuman.view.MainScrollView;
+import com.aotuman.view.loadview.LoadingDialog;
 import com.aotuman.weather.R;
 import com.aotuman.weather.TTApplication;
 
@@ -47,6 +48,8 @@ public class CityWeatherFragment extends Fragment {
 
     private MainScrollView mMainScrollView;
 
+    private LoadingDialog mLoadingDialog;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -65,6 +68,7 @@ public class CityWeatherFragment extends Fragment {
     }
 
     private void initView(View view) {
+        mLoadingDialog = new LoadingDialog(getContext(), "玩命加载中...");
         mMainScrollView = (MainScrollView) view.findViewById(R.id.refresh);
         tv_city_name = (TextView) view.findViewById(R.id.tv_city_name);
         tv_city_weather = (TextView) view.findViewById(R.id.tv_city_weather);
@@ -84,10 +88,12 @@ public class CityWeatherFragment extends Fragment {
         mMainScrollView.setOnRefreshListener(new RefreshListener() {
             @Override
             public void refreshWeather() {
+                mLoadingDialog.show();
                 new GetWeatherInfo().getWeather(mWeather.citynm, new WeatherCallBack() {
                     @Override
                     public void success(Weather weather) {
-                        if(null != weather){
+                        mLoadingDialog.close();
+                        if (null != weather) {
                             weather.citynm = mWeather.citynm;
                             weather.cityid = mWeather.cityid;
                             weather.cityno = mWeather.cityno;
@@ -99,7 +105,7 @@ public class CityWeatherFragment extends Fragment {
 
                     @Override
                     public void failed() {
-
+                        mLoadingDialog.close();
                     }
                 });
             }
@@ -152,7 +158,7 @@ public class CityWeatherFragment extends Fragment {
                 tv_week.setText(nowWeather.week);
 
                 tv_content_city.setText("当前城市：  " + mWeather.citynm);
-                tv_weather_temp.setText("当前温度：  "+ nowWeather.temperature_curr);
+                tv_weather_temp.setText("当前温度：  " + nowWeather.temperature_curr);
                 tv_content_up_humidity.setText("当前湿度:   " + nowWeather.humidity);
 //                tv_content_low_humidity.setText(getTextViewContent(tv_content_low_humidity) + nowWeather.humi_low);
                 tv_content_wind.setText("风向：   " + nowWeather.wind);
@@ -213,4 +219,9 @@ public class CityWeatherFragment extends Fragment {
         mWeather = WeatherInfoDataManager.getInstance(this.getContext()).findWeatherByCityID(cityId);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mLoadingDialog = null;
+    }
 }

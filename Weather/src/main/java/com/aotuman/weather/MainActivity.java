@@ -283,7 +283,7 @@ public class MainActivity extends FragmentActivity {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
         } else {
-            super.onBackPressed();
+            moveTaskToBack(true);
         }
 
     }
