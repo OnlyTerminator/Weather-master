@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/LogModule" />
             <option value="$PROJECT_DIR$/OKHttpModule" />
             <option value="$PROJECT_DIR$/RxBusModule" />
+            <option value="$PROJECT_DIR$/ShareModule" />
             <option value="$PROJECT_DIR$/Weather" />
           </set>
         </option>

@@ -11,24 +11,26 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        release {
+            storeFile file('ttappkey.jks')
+            storePassword "ttandroid"
+            keyAlias "weather"
+            keyPassword "ttandroid"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.debug
-        }
-    }
-    signingConfigs {
-        debug {
-            storeFile file('ttappkey.jks')
-            storePassword "ttandroid"
-            keyAlias "weather"
-            keyPassword "ttandroid"
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -41,4 +43,5 @@ dependencies {
     compile project(':LogModule')
     compile project(':RxBusModule')
     compile project(':CommonTool')
+    compile project(':ShareModule')
 }

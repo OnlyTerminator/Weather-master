@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.aotuman.basetools.L;
+import com.aotuman.commontool.FileUtils;
 import com.aotuman.commontool.SPUtils;
 import com.aotuman.commontool.SharePreEvent;
 import com.aotuman.database.CityInfoDBCreat;
@@ -25,7 +27,15 @@ import com.aotuman.http.okhttp.OkHttpUtils;
 import com.aotuman.http.okhttp.callback.Callback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.editorpage.ShareActivity;
+import com.umeng.socialize.media.UMImage;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +46,9 @@ import okhttp3.Call;
 import okhttp3.Response;
 import rx.Subscription;
 import rx.functions.Func1;
+
+import static android.R.attr.bitmap;
+import static android.R.attr.thumb;
 
 public class MainActivity extends FragmentActivity {
     private ViewPager mPageVp;
@@ -102,10 +115,23 @@ public class MainActivity extends FragmentActivity {
         flb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new ShareAction(MainActivity.this).withText("hello")
-//                        .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.WEIXIN)
-//                        .setCallback(umShareListener).open();
-                Toast.makeText(MainActivity.this,"此功能暂未开通，敬请期待！",Toast.LENGTH_SHORT).show();
+                // 获取内置SD卡路径
+                Bitmap bitmap = screenshot();
+                UMImage image = null;
+
+
+                if (null != bitmap) {
+                    image = new UMImage(MainActivity.this, bitmap);//本地文件
+                    UMImage thumb = new UMImage(MainActivity.this, R.drawable.back);
+                    image.setThumb(thumb);
+
+                    new ShareAction(MainActivity.this).withText("hello")
+                            .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE)
+                            .withMedia(image)
+                            .setCallback(umShareListener).open();
+                }else {
+                Toast.makeText(MainActivity.this,"分享截图失败，请重试！",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -215,38 +241,47 @@ public class MainActivity extends FragmentActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.dl);
     }
 
-//    private UMShareListener umShareListener = new UMShareListener() {
-//        @Override
-//        public void onResult(SHARE_MEDIA platform) {
-//            L.i("plat", "platform" + platform);
-//
-//            Toast.makeText(MainActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
-//
-//        }
-//
-//        @Override
-//        public void onError(SHARE_MEDIA platform, Throwable t) {
-//            Toast.makeText(MainActivity.this, platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
-//            if (t != null) {
-//                L.i("throw", "throw:" + t.getMessage());
-//            }
-//        }
-//
-//        @Override
-//        public void onCancel(SHARE_MEDIA platform) {
-//            Toast.makeText(MainActivity.this, platform + " 分享取消了", Toast.LENGTH_SHORT).show();
-//        }
-//    };
+    private UMShareListener umShareListener = new UMShareListener() {
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            L.i("plat", "platform" + platform);
+
+            Toast.makeText(MainActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(MainActivity.this, platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
+            if (t != null) {
+                L.i("throw", "throw:" + t.getMessage());
+            }
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(MainActivity.this, platform + " 分享取消了", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 
     private void setCurrentIndex(int index) {
         currentIndex = index;
         SPUtils.put(MainActivity.this, SharePreEvent.CURRENT_INDX, currentIndex);
+    }
+
+    private Bitmap screenshot() {
+        // 获取屏幕
+        View dView = getWindow().getDecorView();
+        dView.destroyDrawingCache();
+        dView.buildDrawingCache(false);
+        Bitmap bmp = dView.getDrawingCache();
+        return bmp;
     }
 
     // 获取网络图片的数据
