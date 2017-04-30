@@ -126,7 +126,7 @@ public class MainActivity extends FragmentActivity {
                     image.setThumb(thumb);
 
                     new ShareAction(MainActivity.this).withText("hello")
-                            .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE)
+                            .setDisplayList(SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE)
                             .withMedia(image)
                             .setCallback(umShareListener).open();
                 }else {
