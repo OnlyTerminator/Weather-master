@@ -1,5 +1,8 @@
 package com.aotuman.weather;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -76,6 +79,9 @@ public class MainActivity extends FragmentActivity {
         String s = (String) SPUtils.get(this, SharePreEvent.CITY_LIST, "");
         ps = gson.fromJson(s, new TypeToken<List<CityInfo>>() {
         }.getType());
+        if (null == ps || ps.isEmpty()) {
+            showNormalDialog();
+        }
         currentIndex = (int) SPUtils.get(this, SharePreEvent.CURRENT_INDX, 0);
         mFragmentAdapter = new WeatherFragmentAdapter(this.getSupportFragmentManager(), ps);
         mPageVp.setAdapter(mFragmentAdapter);
@@ -115,6 +121,10 @@ public class MainActivity extends FragmentActivity {
         flb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (null == ps || ps.isEmpty()) {
+                    showNormalDialog();
+                    return;
+                }
                 // 获取内置SD卡路径
                 Bitmap bitmap = screenshot();
                 UMImage image = null;
@@ -126,17 +136,45 @@ public class MainActivity extends FragmentActivity {
                     image.setThumb(thumb);
 
                     new ShareAction(MainActivity.this).withText("hello")
-                            .setDisplayList(SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE)
+                            .setDisplayList(SHARE_MEDIA.QQ, SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
                             .withMedia(image)
                             .setCallback(umShareListener).open();
-                }else {
-                Toast.makeText(MainActivity.this,"分享截图失败，请重试！",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "分享截图失败，请重试！", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         addSubscribeEvent();
         deleteSubscribeEvent();
+    }
+
+    private void showNormalDialog() {
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(MainActivity.this);
+        normalDialog.setIcon(R.drawable.ic_launcher)
+                .setTitle("天气小助手")
+                .setMessage("您还没有城市哦，赶快侧滑左边栏添加城市吧^_^ !")
+                .setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDrawerLayout.openDrawer(GravityCompat.START);
+                            }
+                        }).setNegativeButton("关闭",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private Subscription mAddRxSub;
